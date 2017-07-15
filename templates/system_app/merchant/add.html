@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Merchants{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Merchant
+    <small>ADD</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="#">Merchants</a></li>
+    <li class="active">Add</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    {% if form.non_field_errors %}
+    <div class="callout callout-danger">
+        <ul>
+        {% for error in form.non_field_errors %}
+            <li><strong>{{ error|escape }}</strong></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <form action="{% url 'merchant_add' %}" method="post">
+    {% csrf_token %}
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Profile</h3>
+                </div>
+                <div class="box-body">
+
+                    {% if form.username.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.username.id_for_label }}">
+                            Username
+                            <ul>
+                            {% for error in form.username.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.username }}
+                    </div>
+
+                    {% if form.password.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.password.id_for_label }}">
+                            Password
+                            <ul>
+                            {% for error in form.password.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.password }}
+                    </div>
+                    
+                    {% if form.email.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.email.id_for_label }}">
+                            Email Address
+                            <ul>
+                            {% for error in form.email.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.email }}
+                    </div>
+
+                    {% if form.firstname.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.firstname.id_for_label }}">
+                            First Name
+                            <ul>
+                            {% for error in form.firstname.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.firstname }}
+                    </div>
+
+                    {% if form.lastname.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.lastname.id_for_label }}">
+                            Last Name
+                            <ul>
+                            {% for error in form.lastname.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.lastname }}
+                    </div>
+                </div>
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">Contact Details</h3>
+                </div>
+                <div class="box-body">
+                    {% if form.contact_number.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.contact_number.id_for_label }}">
+                            Contact Number
+                            <ul>
+                            {% for error in form.contact_number.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <small>(+63xxxxxxxxxx)</small>
+                        <!-- widget -->
+                        {{ form.contact_number }}
+                    </div>
+
+                    {% if form.primary_address.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.primary_address.id_for_label }}">
+                            Address
+                            <ul>
+                            {% for error in form.primary_address.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.primary_address }}
+                    </div>
+
+                    {% if form.alternate_address.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.alternate_address.id_for_label }}">
+                            Alternate Address
+                            <ul>
+                            {% for error in form.alternate_address.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.alternate_address }}
+                    </div>
+                </div>
+
+                 <div class="box-header with-border">
+                    <h3 class="box-title">Store Details</h3>
+                </div>
+                <div class="box-body">
+                    {% if form.storename.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.storename.id_for_label }}">
+                            Store Name
+                            <ul>
+                            {% for error in form.storename.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.storename }}
+                    </div>
+
+                    {% if form.product.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.product.id_for_label }}">
+                            Product Description
+                            <ul>
+                            {% for error in form.product.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.product }}
+                    </div>
+
+                    {% if form.facebook.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.facebook.id_for_label }}">
+                            Facebook Page
+                            <ul>
+                            {% for error in form.facebook.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.facebook }}
+                    </div>
+
+                    {% if form.instagram.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.instagram.id_for_label }}">
+                            Instagram Page
+                            <ul>
+                            {% for error in form.instagram.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.instagram }}
+                    </div>
+
+                    {% if form.website.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.website.id_for_label }}">
+                            Website
+                            <ul>
+                            {% for error in form.website.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.website }}
+                    </div>
+                </div>
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">Bank Details</h3>
+                </div>
+                <div class="box-body">
+                    {% if form.bank_name.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.bank_name.id_for_label }}">
+                            Bank Name
+                            <ul>
+                            {% for error in form.bank_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.bank_name }}
+                    </div>
+
+                    {% if form.bank_account.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.bank_account.id_for_label }}">
+                            Bank Account
+                            <ul>
+                            {% for error in form.bank_account.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.bank_account }}
+                    </div>
+
+                    {% if form.bank_owner.errors %}
+                    <div class="form-group has-error">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.bank_owner.id_for_label }}">
+                            Bank Account Owner
+                            <ul>
+                            {% for error in form.bank_owner.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </label>
+                        <!-- widget -->
+                        {{ form.bank_owner }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

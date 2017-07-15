@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          
+        <title>The Cube Store | {% block pagetitle %}{% endblock %} </title>       
+
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+        {% block stylesheets %}
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="{% static "bower_components/Ionicons/css/ionicons.min.css" %}">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{% static "dist/css/AdminLTE.css" %}">
+        {% endblock %}
+        {% block pagestylesheets %}{% endblock %}
+
+        {% block uielements %}
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="{% static "dist/css/skins/_all-skins.min.css" %}">
+        <!-- Date Picker -->
+        <link rel="stylesheet" href="{% static "bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" %}">
+        {% endblock %}
+
+    </head>
+    <body class="hold-transition skin-yellow sidebar-mini">
+        <div class="wrapper">
+            <header class="main-header">
+                <!-- Logo -->
+                <a href="{% url 'dashboard' %}" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini">t<b>CS</b></span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg">The<b>Cube Store</b></span>
+                </a>
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-fixed-top">
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="">{{ user.username }}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <aside class="main-sidebar">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel -->
+                    <div class="user-panel">
+                        <div class="pull-left image">
+                            <img src="{% static "images/pic_placeholder.png" %}" alt="The Cube Store" class="img-circle">
+                        </div>
+                        <div class="pull-left info">
+                            <p>{{ user.first_name }} {{ user.last_name }}</p>
+                        </div>
+                    </div>
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <li class="header">MAIN NAVIGATION</li>
+                        <li>
+                            <a href="{% url 'dashboard' %}">
+                                <i class="fa fa-dashboard"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-user"></i>
+                                <span>Merchants</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#"><i class="fa fa-circle-o"></i>List</a></li>
+                                <li><a href="{% url 'merchant_add' %}"><i class="fa fa-circle-o"></i>Add</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-cube"></i>
+                                <span>Cubes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-clone"></i>
+                                <span>Items</span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <p>
+                        <!-- filler -->
+                        &nbsp;
+                    </p>
+                </section>
+
+                <section class="content-header">
+                    <!-- breadcrumb -->
+                    <!-- <h1>
+                        Merchants
+                        <small>ADD</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Merchants</li>
+                    </ol> -->
+                    {% block breadcrumb %}{% endblock %}
+                </section>      
+
+                <!-- error messages -->
+                <section class="content">
+
+                    {% if messages %}
+                    <div class="callout callout-success">
+                        <ul>
+                        {% for message in messages %}
+                            {% if message.tags %}
+                                {% if message.tags == 'success' %}
+                                    <li>{{ message }}</li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% block callouts %}{% endblock %}
+
+                    {% block main %}{% endblock %}
+                </section>
+            </div>
+
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 0.1.0
+                </div>
+                    <strong>Copyright &copy; 2017.</strong> <p>Template based on:&nbsp;<a href="https://adminlte.io">Almsaeed Studio</a>.</p>
+                    All rights reserved.
+            </footer>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+        <!-- jQuery UI 1.11.4 -->
+        <script src="{% static "bower_components/jquery-ui/jquery-ui.min.js" %}"></script>
+        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+        <script>
+          $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+        <!-- datepicker -->
+        <script src="{% static "bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" %}"></script>
+        <!-- AdminLTE App -->
+        <script src="{% static "dist/js/adminlte.min.js" %}"></script>
+        <!-- FastClick -->
+        <script src="{% static "bower_components/fastclick/lib/fastclick.js" %}"></script>
+
+        {% block pagescripts %}{% endblock %}
+    </body>
+</html>
