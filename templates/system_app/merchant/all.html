@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Merchants{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Merchant
+    <small>ALL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li class="active">Merchants</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Registered merchants: {{ merchants|length }} </h3>
+                <a href="{% url 'merchant_add' %}" class="pull-right">
+                    [Add]
+                </a>
+            </div>
+            <div class="box-body">
+                <table id="merchant_table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Cubes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for merchant in merchants %}
+                            <tr>
+                                <td>
+                                    {{ merchant.profile.id|stringformat:"05d" }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
+                                        {{ merchant.profile.first_name }}
+                                        {{ merchant.profile.last_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <ul style="list-style-type:none;">
+                                        {% for cube in merchant.cubes %}
+                                            <li>
+                                                <a href="{% url 'cube_detail' cube_id=cube.id %}">
+                                                    {{ cube.unit }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#merchant_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

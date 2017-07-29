@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Payouts{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Payouts
+    <small>DELETE</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'payout_all' %}">Payouts</a></li>
+    <li class="active">Delete</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    <div class="callout callout-warning">
+        <p>Are you sure you want to delete this payout?</p>
+        <form action="{% url 'payout_delete' payout_id=payout.id %}" method="post">
+            {% csrf_token %}            
+            <a href="{% url 'payout_detail' payout_id=payout.id %}" class="pull-right">Back</a>
+            <button type="submit" class="btn btn-default btn-sm">Yes</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Merchant ID</b>
+                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
+                            <b>
+                            {{ payout.merchant.id }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Merchant Name</b>
+                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
+                            <b>
+                            {{ payout.merchant.first_name }}
+                            {{ payout.merchant.last_name }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Date</b>
+                        <span class="pull-right text-muted">{{ payout.date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Amount</b>
+                        <span class="pull-right text-muted">{{ payout.amount }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Bank Account</b>
+                        <span class="pull-right text-muted">
+                            {{ payout.bank.bank }} ({{ payout.bank.account }}) 
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Bank Account Owner</b>
+                        <span class="pull-right text-muted">{{ payout.bank.owner }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

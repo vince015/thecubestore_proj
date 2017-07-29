@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% load mathfilters %}
+{% load staticfiles %}
+{% block pagetitle %}Payouts{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Payouts
+    <small>ALL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li class="active">Payouts</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <form action="{% url 'sales_pay' payout_id=payout.id %}" method="post">
+                {% csrf_token %}
+                <div class="box-body">
+                    <table id="sales_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Gross</th>
+                                <th>Net</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                                <tr>
+                                    <td>
+                                      <input type="checkbox" name="sales" value="{{ sale.id }}">  
+                                    </td>
+                                    <td>
+                                        {{ sale.item }}
+                                    </td>
+                                    <td>
+                                        {{ sale.date }}
+                                    </td>
+                                    <td>
+                                        {{ sale.quantity }}
+                                    </td>
+                                    <td>
+                                        {{ sale.gross|div:sale.quantity }}
+                                    </td>
+                                    <td>
+                                        {{ sale.gross }}
+                                    </td>
+                                    <td>
+                                        {{ sale.net }}
+                                    </td>
+                                </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#sales_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

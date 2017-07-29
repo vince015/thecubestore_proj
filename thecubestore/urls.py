@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 
 appurls = [
     url(r'^admin/', admin.site.urls),
+    url(r'^thecubestore/', include('viewer_app.urls')),
     url(r'^system/', include('system_app.urls'))
 ]
 

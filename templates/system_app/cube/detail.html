@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Cubes{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Cubes
+    <small>DETAIL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'cube_all' %}">Cubes</a></li>
+    <li class="active">Detail</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Owner</b>
+                        <a href="{% url 'merchant_detail' user_id=cube.user.id %}" class="pull-right">
+                            <b>
+                            {{ cube.user.first_name }}
+                            {{ cube.user.last_name }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Unit</b>
+                        <span class="pull-right text-muted">{{ cube.unit }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Duration</b>
+                        <span class="pull-right text-muted">{{ cube.duration }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Promo</b>
+                        <span class="pull-right text-muted">{{ cube.promo }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Start Date</b>
+                        <span class="pull-right text-muted">{{ cube.start_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>End Date</b>
+                        <span class="pull-right text-muted">{{ cube.end_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Next Due Date</b>
+                        <span class="pull-right text-muted">{{ cube.next_due_date }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="box-footer">
+                <a href="{% url 'cube_edit' cube_id=cube.id %}">Edit</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'cube_delete' cube_id=cube.id %}">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="cube-item">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Items in this cube: {{ items|length }} </h3>
+                <a href="{% url 'item_add' cube_id=cube.id %}" class="pull-right">
+                    [Add]
+                </a>
+            </div>
+            {% if items %}
+            <div class="box-body">
+                <table id="item_table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'item_detail' item_id=item.id %}">
+                                        {{ item.code }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ item.quantity }}
+                                </td>
+                                <td>
+                                    {{ item.price }}
+                                </td>
+                                <td>
+                                    <a href="#" class="pull-right">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#item_table').DataTable({
+            'paging'      : false,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

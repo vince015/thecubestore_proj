@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          
+        <title>The Cube Store | {% block pagetitle %}{% endblock %} </title>       
+
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="{% static "bower_components/Ionicons/css/ionicons.min.css" %}">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{% static "dist/css/AdminLTE.css" %}">
+        {% block pagestylesheets %}{% endblock %}
+
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="{% static "dist/css/skins/_all-skins.min.css" %}">
+    </head>
+    <body class="hold-transition skin-yellow layout-top-nav">
+        <div id="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="{% url 'profile' %}" class="navbar-brand">the <b>Cube Store</b></a>
+                        </div>
+
+                        {% block navbarmenu %}{% endblock %}
+                    </div>
+                </nav>
+            </header>
+
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <div class="container">
+                    <!-- Content Header (Page header) -->
+                    <section class="content-header">
+                        <!-- filler -->
+                        &nbsp;
+                    </section>
+
+                    <section class="content-header">
+                        {% block breadcrumb %}{% endblock %}
+                    </section>      
+
+                    <section class="content">
+
+                        {% if messages %}
+                        <div class="callout callout-success">
+                            <ul>
+                            {% for message in messages %}
+                                {% if message.tags %}
+                                    {% if message.tags == 'success' %}
+                                        <li>{{ message }}</li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% block callouts %}{% endblock %}
+
+                        {% block main %}{% endblock %}
+                    </section>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <div class="container">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width:34%; padding:0 25px;">            
+                                    <b>Location</b>
+                                    <div style="text-align:center;">
+                                        <small class="text-muted">
+                                            2nd Floor 1053 P. Noval Street, Sampaloc, Manila
+                                        </small>
+                                    </div>
+
+                                    <div>
+                                        <iframe allowtransparency="true"
+                                                frameborder="0"
+                                                scrolling="no"
+                                                style="width: 100%;
+                                                       height: 150px;
+                                                       margin-top: 0px;
+                                                       margin-bottom: 0px;" 
+                                                       src="//www.weebly.com/weebly/apps/generateMap.php?map=google&amp;elementid=281899431491122368&amp;ineditor=0&amp;control=3&amp;width=auto&amp;height=150px&amp;overviewmap=0&amp;scalecontrol=0&amp;typecontrol=0&amp;zoom=14&amp;long=120.98790269999995&amp;lat=14.6083131&amp;domain=www&amp;point=1&amp;align=2&amp;reseller=false"> 
+                                        </iframe>
+                                    </div>
+                                </td>
+                                <td style="width:39.52380952381%; padding:0 25px;">
+                                    <b>About Us</b>
+                                    <div class="paragraph">
+                                        <small class="text-muted">
+                                            <em>The Cube Store</em> serves as a &nbsp;medium to existing and aspiring entrepreneurs to build and showcase their brand&nbsp;with a very minimal cost.&nbsp;
+                                        </small>
+                                    </div>
+                                    <br>
+                                    <b>Contact Us</b>
+                                    <div class="paragraph">
+                                        <small class="text-muted">
+                                            <ul>
+                                                <li>0917 624 1042</li>
+                                                <li>0932 859 2367</li>
+                                                <li>252 9215</li>
+                                                <li>thecubestoreph@gmail.com​</li>
+                                            </ul>
+                                        </small>
+                                    </div>
+                                </td>
+                                <td style="width:26.47619047619%; padding:0 25px;">
+                                    <div class="wsite-spacer" style="height:10px;"></div>
+                                    <div>
+                                        <div class="wsite-image wsite-image-border-none " style="padding-top:10px;padding-bottom:10px;margin-left:0;margin-right:0;text-align:center">
+                                            <a>
+                                                <img src="{% static 'images/logo.png' %}" alt="Picture" style="width:228;max-width:100%">
+                                            </a>
+                                            <div style="display:block;font-size:90%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="paragraph" style="text-align:center;">
+                                        <small class="text-muted">
+                                            &copy; COPYRIGHT 2017. ALL RIGHTS RESERVED.
+                                        </small>
+                                    </div>
+                                    <div style="text-align:left;">
+                                        <div style="height:10px;overflow:hidden"></div>
+                                        <span class="wsite-social wsite-social-default">
+                                            <a class="first-child wsite-social-item wsite-social-facebook" href="https://www.facebook.com/TheCubeStorePH/" target="_blank">
+                                                <i class="fa fa-facebook margin-r-5"></i>
+                                            </a>
+                                            <a class="wsite-social-item wsite-social-instagram" href="https://www.instagram.com/thecubestore.ph/?hl=en" target="_blank">
+                                                <i class="fa fa-instagram margin-r-5"></i>
+                                            </a>
+                                            <a class="last-child wsite-social-item wsite-social-mail" href="mailto:thecubestoreph@gmail.com" target="_blank">
+                                                <i class="fa fa-envelope-o margin-r-5"></i>
+                                            </a>
+                                        </span>
+                                        <div style="height:10px;overflow:hidden"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <hr>
+                    <div class="pull-right hidden-xs">
+                        <b>Version</b> 2.4.0
+                    </div>
+                    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+                    reserved.
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+        <!-- jQuery UI 1.11.4 -->
+        <script src="{% static "bower_components/jquery-ui/jquery-ui.min.js" %}"></script>
+        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+        <script>
+          $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+        <!-- datepicker -->
+        <script src="{% static "bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" %}"></script>
+        <!-- AdminLTE App -->
+        <script src="{% static "dist/js/adminlte.min.js" %}"></script>
+        <!-- FastClick -->
+        <script src="{% static "bower_components/fastclick/lib/fastclick.js" %}"></script>
+
+        {% block pagescripts %}{% endblock %}
+    </body>
+</html>

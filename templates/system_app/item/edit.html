@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Items{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Items
+    <small>EDIT</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'item_all' %}">Items</a></li>
+    <li class="active">Edit</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    {% if form.non_field_errors %}
+    <div class="callout callout-danger">
+        <ul>
+        {% for error in form.non_field_errors %}
+            <li><strong>{{ error|escape }}</strong></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <form action="{% url 'item_edit' item_id=form.instance.id %}" method="post">
+        {% csrf_token %}
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        {% if form.quantity.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.quantity.id_for_label }}">
+                                Quantity
+                                <ul>
+                                {% for error in form.quantity.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.quantity }}
+                        </div>
+
+                        {% if form.price.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.price.id_for_label }}">
+                                Price
+                                <ul>
+                                {% for error in form.price.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.price }}
+                        </div>
+
+                        {% if form.description.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.description.id_for_label }}">
+                                Description
+                                <ul>
+                                {% for error in form.description.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.description }}
+                        </div>
+                    </div>
+
+                    <div class="box-header with-border">
+                        <b>Commission</b>
+                    </div>
+                    <div class="box-body">
+                        {% if form.vat.errors %}
+                        <div class="form-group col-xs-6 has-error">
+                        {% else %}
+                        <div class="form-group col-xs-6">
+                        {% endif %}
+                            <label for="{{ form.vat.id_for_label }}">
+                                VAT
+                                <ul>
+                                {% for error in form.vat.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <small>(%)</small>
+                            <!-- widget -->
+                            {{ form.vat }}
+                        </div>
+
+                        {% if form.commission.errors %}
+                        <div class="form-group col-xs-6 has-error">
+                        {% else %}
+                        <div class="form-group col-xs-6">
+                        {% endif %}
+                            <label for="{{ form.commission.id_for_label }}">
+                                Sales
+                                <ul>
+                                {% for error in form.commission.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <small>(%)</small>
+                            <!-- widget -->
+                            {{ form.commission }}
+                        </div>
+
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script>
+    $(document).ready(function() {
+        $('.datepicker').datepicker({
+            autoclose: true,
+        });
+    });
+</script>
+{% endblock %}

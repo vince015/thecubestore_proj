@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Items{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Items
+    <small>DELETE</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'item_all' %}">Items</a></li>
+    <li class="active">Delete</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    <div class="callout callout-warning">
+        <p>Are you sure you want to delete this item?</p>
+        <form action="{% url 'item_delete' item_id=item.id %}" method="post">
+            {% csrf_token %}            
+            <a href="{% url 'item_detail' item_id=item.id %}" class="pull-right">Back</a>
+            <button type="submit" class="btn btn-default btn-sm">Yes</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Cube</b>
+                        <a href="{% url 'cube_detail' cube_id=item.cube.id %}" class="pull-right">
+                            <b>
+                            {{ item.cube.id }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Code</b>
+                        <span class="pull-right text-muted">{{ item.code }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Quantity</b>
+                        <span class="pull-right text-muted">{{ item.quantity }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Price</b>
+                        <span class="pull-right text-muted">{{ item.price }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Commission</b>
+                        <span class="pull-right text-muted">
+                            {{ item.vat }}% VAT + {{ item.vat }}% Sales
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Description</b>
+                        <span class="pull-right text-muted">{{ item.description }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

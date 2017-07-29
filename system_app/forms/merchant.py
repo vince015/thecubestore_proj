@@ -1,4 +1,67 @@
 from django import forms
+from system_app.models import Contact, Store, Bank
+
+class ContactForm(forms.ModelForm):
+
+    class Meta:
+        model = Contact
+        fields = [
+                    'contact_number',
+                    'primary_address',
+                    'alternate_address',
+                ]
+        widgets = {
+                    'contact_number': forms.TextInput(attrs={'class': 'form-control',
+                                                             'placeholder': 'Contact Number',
+                                                             'data-inputmask':"'mask': ['(+63) 999 999 9999 ']",
+                                                             'data-mask': True}),
+                    'primary_address': forms.TextInput(attrs={'class': 'form-control',
+                                                       'placeholder': 'Primary address'}),
+                    'alternate_address': forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Alternate address'}),
+                }
+
+class StoreForm(forms.ModelForm):
+
+    class Meta:
+        model = Store
+        fields = [
+                    'name',
+                    'product',
+                    'facebook',
+                    'instagram',
+                    'website',
+                ]
+        widgets = {
+                    'name': forms.TextInput(attrs={'class': 'form-control',
+                                                   'placeholder': 'Store\'s name'}),
+                    'product': forms.TextInput(attrs={'class': 'form-control',
+                                                      'placeholder': 'Product'}),
+                    'facebook': forms.TextInput(attrs={'class': 'form-control',
+                                                       'placeholder': 'Store\'s Facebook page'}),
+                    'instagram': forms.TextInput(attrs={'class': 'form-control',
+                                                        'placeholder': 'Store\'s Instagram page'}),
+                    'website': forms.TextInput(attrs={'class': 'form-control',
+                                                      'placeholder':'Store\'s website'}),
+                }
+
+class BankForm(forms.ModelForm):
+
+    class Meta:
+        model = Bank
+        fields = [
+                    'owner',
+                    'bank',
+                    'account',
+                ]
+        widgets = {
+                    'owner': forms.TextInput(attrs={'class': 'form-control',
+                                                    'placeholder': 'Bank account owner\'s name'}),
+                    'bank': forms.TextInput(attrs={'class': 'form-control',
+                                                   'placeholder': 'Bank\'s name'}),
+                    'account': forms.TextInput(attrs={'class': 'form-control',
+                                                      'placeholder': 'Bank account number'}),
+                }
 
 class MerchantForm(forms.Form):
 
@@ -17,6 +80,7 @@ class MerchantForm(forms.Form):
                                                              'placeholder': 'Generated password'}))
 
     email = forms.EmailField(label='E-mail address',
+                             required=False,
                              widget=forms.EmailInput(attrs={'class': 'form-control',
                                                             'placeholder': 'Valid e-mail address'}))
 
@@ -32,42 +96,50 @@ class MerchantForm(forms.Form):
                                widget=forms.TextInput(attrs={'class': 'form-control',
                                                              'placeholder': 'Last Name'}))
 
-    contact_number = forms.CharField(max_length=13,
+    contact_number = forms.CharField(max_length=18,
                                      required=True,
                                      label='Contact Number',
                                      widget=forms.TextInput(attrs={'class': 'form-control',
-                                                                   'placeholder': 'Contact number (mobile)'}))
+                                                                   'placeholder': 'Contact number (mobile)',
+                                                                   'data-inputmask':"'mask': ['(+63) 999 999 9999 ']",
+                                                                   'data-mask': True}))
 
     primary_address = forms.CharField(max_length=2048,
+                                      required=False,
                                       label='Address',
                                       widget=forms.TextInput(attrs={'class': 'form-control',
                                                                     'placeholder': 'Primary address'}))
 
     alternate_address = forms.CharField(max_length=2048,
+                                        required=False,
                                         label='Alternate Address',
                                         widget=forms.TextInput(attrs={'class': 'form-control',
                                                                       'placeholder': 'Alternate address'}))
- 
+
     storename = forms.CharField(max_length=64,
                                 required=True,
                                 label='Store Name',
                                 widget=forms.TextInput(attrs={'class': 'form-control',
                                                               'placeholder': 'Store\'s name'}))
     product = forms.CharField(max_length=128,
+                              required=False,
                               label='Product Description',
                               widget=forms.TextInput(attrs={'class': 'form-control',
                                                             'placeholder': 'Store\'s products'}))
 
     facebook = forms.CharField(max_length=64,
+                               required=False,
                                label='Facebook Page',
                                widget=forms.TextInput(attrs={'class': 'form-control',
                                                               'placeholder': 'Store\'s Facebook page'}))
 
     instagram = forms.CharField(max_length=64,
+                                required=False,
                                 label='Instagram Page',
                                 widget=forms.TextInput(attrs={'class': 'form-control',
                                                               'placeholder': 'Store\'s Instagram page'}))
     website = forms.CharField(max_length=64,
+                              required=False,
                               label='Website',
                               widget=forms.TextInput(attrs={'class': 'form-control',
                                                             'placeholder': 'Store\'s website'}))
@@ -89,3 +161,4 @@ class MerchantForm(forms.Form):
                                  label='Bank Account Owner',
                                  widget=forms.TextInput(attrs={'class': 'form-control',
                                                                'placeholder': 'Bank account owner\'s name'}))
+

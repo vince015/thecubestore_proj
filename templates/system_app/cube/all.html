@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Cubes{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Cubes
+    <small>ALL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li class="active">Cubes</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="cube_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Current Lease</th>
+                                <th>Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cube in cubes %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'cube_detail' cube_id=cube.id %}">
+                                            {{ cube.unit }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ cube.start_date }}-{{ cube.end_date }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'merchant_detail' user_id=cube.user.id %}">
+                                            {{ cube.user.first_name }} {{ cube.user.last_name }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#cube_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

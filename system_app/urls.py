@@ -1,14 +1,49 @@
 from django.conf.urls import url
-from system_app.views import home, merchant
+from system_app.views import home, merchant, cube, item, payout, sales
 
 home_url = [
     url(r'^login/$', home.user_login, name='login'),
     url(r'^logout/$', home.user_logout, name='logout'),
-    url(r'^$', home.dashboard, name='dashboard')
+    url(r'^dashboard/$', home.dashboard, name='dashboard')
 ]
 
 merchant_url = [
-    url(r'^merchant/add/$', merchant.add, name='merchant_add')
+    url(r'^merchant/(?P<user_id>[0-9]+)$', merchant.detail, name='merchant_detail'),
+    url(r'^merchant/all/$', merchant.all, name='merchant_all'),
+    url(r'^merchant/add/$', merchant.add, name='merchant_add'),
+    url(r'^merchant/password/$', merchant.change_password, name='change_password'),
+    url(r'^merchant/contact/(?P<contact_id>[0-9]+)$', merchant.contact_edit, name='contact_edit'),
+    url(r'^merchant/store/(?P<store_id>[0-9]+)$', merchant.store_edit, name='store_edit'),
+    url(r'^merchant/bank/(?P<bank_id>[0-9]+)$', merchant.bank_edit, name='bank_edit')
 ]
 
-urlpatterns = home_url + merchant_url
+cube_url = [
+    url(r'^cube/(?P<cube_id>[0-9]+)$', cube.detail, name='cube_detail'),
+    url(r'^cube/all/$', cube.all, name='cube_all'),
+    url(r'^cube/add/(?P<user_id>[0-9]+)$', cube.add, name='cube_add'),
+    url(r'^cube/edit/(?P<cube_id>[0-9]+)$', cube.edit, name='cube_edit'),
+    url(r'^cube/delete/(?P<cube_id>[0-9]+)$', cube.delete, name='cube_delete')
+]
+
+item_url = [
+    url(r'^item/(?P<item_id>[0-9]+)$', item.detail, name='item_detail'),
+    url(r'^item/all/$', item.all, name='item_all'),
+    url(r'^item/add/(?P<cube_id>[0-9]+)$', item.add, name='item_add'),
+    url(r'^item/edit/(?P<item_id>[0-9]+)$', item.edit, name='item_edit'),
+    url(r'^item/delete/(?P<item_id>[0-9]+)$', item.delete, name='item_delete')
+]
+
+payout_url = [
+    url(r'^payout/(?P<payout_id>[0-9]+)$', payout.detail, name='payout_detail'),
+    url(r'^payout/all/$', payout.all, name='payout_all'),
+    url(r'^payout/add/(?P<user_id>[0-9]+)$', payout.add, name='payout_add'),
+    url(r'^payout/edit/(?P<payout_id>[0-9]+)$', payout.edit, name='payout_edit'),
+    url(r'^payout/delete/(?P<payout_id>[0-9]+)$', payout.delete, name='payout_delete')
+]
+
+sales_url = [
+    url(r'^sales/add/$', sales.add, name='sales_add'),
+    url(r'^sales/pay/(?P<payout_id>[0-9]+)$', sales.pay, name='sales_pay')
+]
+
+urlpatterns = home_url + merchant_url + cube_url + item_url + payout_url + sales_url

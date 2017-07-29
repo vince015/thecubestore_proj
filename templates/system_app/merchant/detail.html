@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Merchants{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Merchant
+    <small>PROFILE</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'merchant_all' %}">Merchants</a></li>
+    <li class="active">Profile</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <h3 class="profile-username text-center">{{ profile.first_name }} {{ profile.last_name }}</h3>
+                <p class="text-muted text-center">Merchant ID: {{ profile.id|stringformat:"05d" }}</p>
+
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>store</b>
+                        <a href="{% url 'store_edit' store_id=store.id %}" class="pull-right">
+                            <b>{{ store.name }}</b>
+                        </a>
+                    </li>
+                    {% if store.facebook %}
+                        <li class="list-group-item">
+                            <b>facebook</b>
+                            <a href="http://facebook.com/{{ store.facebook }}" class="pull-right">
+                                {{ store.facebook }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if store.instagram %}
+                        <li class="list-group-item">
+                            <b>instagram</b>
+                            <a href="http://instagram.com/{{ store.instagram }}" class="pull-right">
+                                {{ store.instagram }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if store.website %}
+                        <li class="list-group-item" style="overflow:hidden;">
+                            <b>website</i></b>
+                            <a href="{{ store.website }}" class="pull-right">
+                                {{ store.website }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Contact Info</h3>
+                <a href="{% url 'contact_edit' contact_id=contact.id %}" class="pull-right">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-mobile margin-r-5"></i> Contact Number</strong>
+                <p class="text-muted">
+                    {{ contact.contact_number }}
+                </p>
+
+                {% if profile.email %}
+                    <strong><i class="fa fa-at margin-r-5"></i> E-mail</strong>
+                    <p class="text-muted" style="overflow:hidden;">
+                        {{ profile.email }}
+                    </p>
+                {% endif %}
+
+                {% if profile.primary_address %}
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Primary Address</strong>
+                    <p class="text-muted">
+                        {{ contact.primary_address }}
+                    </p>
+                {% endif %}
+
+                {% if profile.alternate_address %}
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Alternate Address</strong>
+                    <p class="text-muted">
+                        {{ contact.alternate_address }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Bank Details</h3>
+                <a href="{% url 'bank_edit' bank_id=bank.id %}" class="pull-right">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-bank margin-r-5"></i> Bank</strong>
+                <p class="text-muted">
+                    {{ bank.bank }}
+                </p>
+
+                <strong><i class="fa fa-money margin-r-5"></i> Account</strong>
+                <p class="text-muted" style="overflow:hidden;">
+                    {{ bank.account }}
+                </p>
+
+                <strong><i class="fa fa-handshake-o margin-r-5"></i> Owner</strong>
+                <p class="text-muted">
+                    {{ bank.owner }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#cube" data-toggle="tab">Cubes</a></li>
+                <li><a href="#payout" data-toggle="tab">Payouts</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="cube" class="active tab-pane">
+                    <table id="cube_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Next Due Date</th>
+                                <th>
+                                    <a href="{% url 'cube_add' user_id=profile.id %}" class="pull-right">
+                                        [Add]
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cube in cubes %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'cube_detail' cube_id=cube.id %}">
+                                        {{ cube.unit }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ cube.next_due_date }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'cube_edit' cube_id=cube.id %}" class="pull-right">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="payout" class="tab-pane">
+                    <table id="payout_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>
+                                    <a href="{% url 'payout_add' user_id=profile.id %}" class="pull-right">
+                                        [Add]
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payout in payouts %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'payout_detail' payout_id=payout.id %}">
+                                        {{ payout.id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ payout.date }}
+                                </td>
+                                <td>
+                                    {{ payout.amount }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'payout_edit' payout_id=payout.id %}" class="pull-right">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#cube_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        });
+        $('#payout_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

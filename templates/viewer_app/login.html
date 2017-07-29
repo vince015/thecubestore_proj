@@ -1,37 +1,19 @@
-<!DOCTYPE html>
+{% extends "viewer_app/base.html" %}
 
 {% load staticfiles %}
+{% block pagetitle %}Welcome{% endblock %}
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-          
-        <title>The Cube Store | Welcome </title>       
-
-        <!-- Tell the browser to be responsive to screen width -->
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
-        <!-- Bootstrap 3.3.7 -->
-        <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}">
-        <!-- Ionicons -->
-        <link rel="stylesheet" href="{% static "bower_components/Ionicons/css/ionicons.min.css" %}">
-        <!-- Theme style -->
-        <link rel="stylesheet" href="{% static "dist/css/AdminLTE.css" %}">
-
-        <!-- AdminLTE Skins. Choose a skin from the css/skins
-           folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{% static "dist/css/skins/_all-skins.min.css" %}">
-    </head>
-    <body class="hold-transition skin-yellow sidebar-mini">
+{% block main %}
+<div class="row">
+    <div class="col-md-6">
+        <h3>Anouncement</h3>
+        <small class="text-muted">Date issued: July 23, 2017</small>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis lectus at ipsum consequat fermentum at in sem. Suspendisse convallis, erat vel condimentum ullamcorper, libero magna fringilla est, tristique vehicula metus eros nec lectus. Nullam fermentum, enim quis laoreet porta, nunc est tincidunt lacus, sit amet gravida ligula nisi vel turpis. Aliquam erat volutpat. Nunc efficitur posuere libero, aliquam ornare ante faucibus sollicitudin. Mauris ut imperdiet velit, vitae vestibulum urna. Etiam in rhoncus purus. Mauris non mollis massa. Nullam sagittis sollicitudin nibh, in auctor ligula vestibulum a. Integer magna ligula, commodo laoreet justo in, consectetur cursus velit. Morbi vitae dictum arcu, luctus condimentum tellus. Praesent malesuada, diam in semper malesuada, nisl nulla congue velit, nec egestas massa ligula nec augue. Nam pulvinar in purus et consequat.
+        </p>
+    </div>
+    <div class="col-md-6">
         <div class="login-box">
-            <!-- login-log -->
-            <div class="login-logo">
-                <img src="{% static "images/logo.png" %}" alt="The Cube Store" />
-            </div>
-            <!-- end login-logo -->
 
             <!-- login-box-body -->
             <div class="login-box-body">
@@ -43,6 +25,9 @@
                                 {% if message.tags == 'error' %}
                                     class='text-red'
                                 {% endif %}
+                                {% if message.tags == 'success' %}
+                                    class='text-green'
+                                {% endif %}
                             {% endif %}>
                             {{ message }}
                         </li>
@@ -50,7 +35,7 @@
                     </ul>
                 {% endif %}
                 {% if not messages %}
-                    <p class="login-box-msg">Sign in to start your session</p>
+                    <p class="login-box-msg">Welcome Merchant!</p>
                 {% endif %}
 
                 <!-- login form -->
@@ -90,5 +75,6 @@
             </div>
             <!-- end login-box-body -->
         </div>
-    </body>
-</html>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+from django import forms
+from system_app.models import Item
+
+class ItemForm(forms.ModelForm):
+
+    class Meta:
+        model = Item
+        fields = [
+                    'quantity',
+                    'price',
+                    'vat',
+                    'commission',
+                    'description',
+                ]
+        widgets = {
+                    'quantity': forms.NumberInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Quantity'}),
+                    'price': forms.NumberInput(attrs={'step': 0.25,
+                                                      'class': 'form-control',
+                                                      'placeholder': 'Price'}),
+                    'vat': forms.NumberInput(attrs={'step': 0.25,
+                                                    'class': 'form-control',
+                                                    'placeholder': 'VAT deduction'}),
+                    'commission': forms.NumberInput(attrs={'step': 0.25,
+                                                    'class': 'form-control',
+                                                    'placeholder': 'Sales commission'}),
+                    'description': forms.TextInput(attrs={'class': 'form-control',
+                                                          'placeholder': 'Description'}),
+                }

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Cubes{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Cubes
+    <small>DELETE</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'cube_all' %}">Cubes</a></li>
+    <li class="active">Delete</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    <div class="callout callout-warning">
+        <p>Are you sure you want to delete this cube?</p>
+        <form action="{% url 'cube_delete' cube_id=cube.id %}" method="post">
+            {% csrf_token %}            
+            <a href="{% url 'cube_detail' cube_id=cube.id %}" class="pull-right">Back</a>
+            <button type="submit" class="btn btn-default btn-sm">Yes</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Owner</b>
+                        <a href="{% url 'merchant_detail' user_id=cube.user.id %}" class="pull-right">
+                            <b>
+                            {{ cube.user.first_name }}
+                            {{ cube.user.last_name }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Unit</b>
+                        <span class="pull-right text-muted">{{ cube.unit }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Duration</b>
+                        <span class="pull-right text-muted">{{ cube.duration }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Promo</b>
+                        <span class="pull-right text-muted">{{ cube.promo }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Start Date</b>
+                        <span class="pull-right text-muted">{{ cube.start_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>End Date</b>
+                        <span class="pull-right text-muted">{{ cube.end_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Next Due Date</b>
+                        <span class="pull-right text-muted">{{ cube.next_due_date }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="cube-item">
+    <div class="col-md-12">
+        <div class="box">
+            {% if items %}
+            <div class="box-body">
+                <table id="item_table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    <a href="#">
+                                        {{ item.code }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ item.quantity }}
+                                </td>
+                                <td>
+                                    {{ item.price }}
+                                </td>
+                                <td>
+                                    <a href="#" class="pull-right">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

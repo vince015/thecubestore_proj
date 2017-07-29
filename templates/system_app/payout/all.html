@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Payouts{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Payouts
+    <small>ALL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li class="active">Payouts</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="cube_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">ID</th>
+                                <th rowspan="2">Merchant ID</th>
+                                <th rowspan="2">Date</th>
+                                <th rowspan="2">Amount</th>
+                                <th colspan="2">Bank Details</th>
+                            </tr>
+                            <tr>
+                                <th>Owner</th>
+                                <th>Account</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payout in payouts %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'payout_detail' payout_id=payout.id %}">
+                                            {{ payout.id }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
+                                            {{ payout.merchant.id|stringformat:"05d" }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ payout.date }}
+                                    </td>
+                                    <td>
+                                        {{ payout.amount }}
+                                    </td>
+                                    <td>
+                                        {{ payout.bank.owner }}
+                                    </td>
+                                    <td>
+                                        <a href="#">
+                                            {{ payout.bank.bank }} {{ payout.bank.account }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#cube_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}

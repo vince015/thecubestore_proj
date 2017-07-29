@@ -1,0 +1,203 @@
+{% extends "viewer_app/base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Profile{% endblock %}
+
+{% block navbarmenu %}
+<div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="{% url 'viewer_change_password' %}">{{ user.username }}</a>
+        </li>
+        <li>
+            <a href="{% url 'viewer_logout' %}"><i class="fa fa-sign-out"></i></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Profile
+</h1>
+<ol class="breadcrumb">
+    <li class="active">Profile</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <h3 class="profile-username text-center">{{ profile.first_name }} {{ profile.last_name }}</h3>
+                
+                <p class="text-primary text-center">Store:
+                    <b>{{ store.name }}</b>
+                </p>
+                <p class="text-muted text-center">Merchant ID: {{ profile.id|stringformat:"05d" }}</p>
+            </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Info</h3>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-mobile margin-r-5"></i> Contact Number</strong>
+                <p class="text-muted">
+                    {{ contact.contact_number }}
+                </p>
+
+                {% if profile.email %}
+                    <strong><i class="fa fa-at margin-r-5"></i> E-mail</strong>
+                    <p class="text-muted" style="overflow:hidden;">
+                        {{ profile.email }}
+                    </p>
+                {% endif %}
+
+                {% if profile.primary_address %}
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Primary Address</strong>
+                    <p class="text-muted">
+                        {{ contact.primary_address }}
+                    </p>
+                {% endif %}
+
+                {% if profile.alternate_address %}
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Alternate Address</strong>
+                    <p class="text-muted">
+                        {{ contact.alternate_address }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Socials</h3>
+            </div>
+            <div class="box-body">
+                {% if store.facebook or store.instagram or store.website %}
+                    {% if store.facebook %}
+                        <strong><i class="fa fa-facebook margin-r-5"></i> Facebook</strong>
+                        <p class="text-muted">{{ store.facebook }}</p>
+                    {% endif %}
+
+                    {% if store.instagram%}
+                        <strong><i class="fa fa-instagram margin-r-5"></i> Instagram</strong>
+                        <p class="text-muted">{{ store.instagram }}</p>
+                    {% endif %}
+
+                    {% if store.website %}
+                        <strong><i class="fa fa-globe margin-r-5"></i> Website</strong>
+                        <p class="text-muted">{{ store.website }}</p>
+                    {% endif %}
+
+                {% else %}
+                <i class="muted-text">None</i>
+                {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Bank Details</h3>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-bank margin-r-5"></i> Bank</strong>
+                <p class="text-muted">
+                    {{ bank.bank }}
+                </p>
+
+                <strong><i class="fa fa-money margin-r-5"></i> Account</strong>
+                <p class="text-muted" style="overflow:hidden;">
+                    {{ bank.account }}
+                </p>
+
+                <strong><i class="fa fa-handshake-o margin-r-5"></i> Owner</strong>
+                <p class="text-muted">
+                    {{ bank.owner }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#cube" data-toggle="tab">Cubes</a></li>
+                <li><a href="#payout" data-toggle="tab">Payouts</a></li>
+            </ul>
+            <div class="active tab-content">
+                <div id="cube" class="active tab-pane">
+                    <table id="cube_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Next Due Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cube in cubes %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'view_cube' cube_id=cube.id %}">
+                                        {{ cube.unit }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ cube.next_due_date }}
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="payout" class="tab-pane">
+                    <div class="col-lg-12 col-xs-12">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner">
+                                <h3>{{ earnings }}<sup style="font-size: 20px">Php</sup></h3>
+
+                                <p>Earnings</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>                                
+                        </div>
+                    </div>
+
+                    <table id="payout_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payout in payouts %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'view_payout' payout_id=payout.id %}">
+                                        {{ payout.id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ payout.date }}
+                                </td>
+                                <td>
+                                    {{ payout.amount }}
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

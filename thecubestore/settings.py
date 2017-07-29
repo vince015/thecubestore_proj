@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mathfilters',
+    'import_export',
     'system_app',
     'viewer_app'
 ]
@@ -148,4 +150,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "www", "static")
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
-LOGIN_URL = '/system/login/'
+LOGIN_URL = '/thecubestore/login/'

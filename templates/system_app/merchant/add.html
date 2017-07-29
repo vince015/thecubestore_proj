@@ -10,7 +10,7 @@
 </h1>
 <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-    <li><a href="#">Merchants</a></li>
+    <li><a href="{% url 'merchant_all' %}">Merchants</a></li>
     <li class="active">Add</li>
 </ol>
 {% endblock %}
@@ -69,9 +69,16 @@
                             </ul>
                         </label>
                         <!-- widget -->
-                        {{ form.password }}
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                              <button type="button" class="btn btn-info" id="generate-password-btn">Generate</button>
+                            </div>
+                            <!-- /btn-group -->
+                            {{ form.password }}
+                        </div>
                     </div>
-                    
+
+
                     {% if form.email.errors %}
                     <div class="form-group has-error">
                     {% else %}
@@ -141,7 +148,6 @@
                             {% endfor %}
                             </ul>
                         </label>
-                        <small>(+63xxxxxxxxxx)</small>
                         <!-- widget -->
                         {{ form.contact_number }}
                     </div>
@@ -333,4 +339,25 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static 'plugins/input-mask/jquery.inputmask.js' %}"></script>
+<script>
+    $(function () {
+        $('#generate-password-btn').on( 'click', function () {
+            var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            var pass = "";
+
+            for(x = 0; x < 8; x++)
+            {
+                i = Math.floor(Math.random() * 62);
+                pass += chars.charAt(i);
+            }
+            $('#id_password').val(pass);
+        });
+
+        $('[data-mask]').inputmask();
+    })
+</script>
 {% endblock %}

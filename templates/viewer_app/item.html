@@ -1,0 +1,72 @@
+{% extends "viewer_app/base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Item{% endblock %}
+
+{% block navbarmenu %}
+<div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="#">{{ user.username }}</a>
+        </li>
+        <li>
+            <a href="{% url 'viewer_logout' %}"><i class="fa fa-sign-out"></i></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Item
+    <small>{{ item.code }}</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profile</a></li>
+    <li><a href="{% url 'view_cube' cube_id=item.cube.id %}"> Cube {{ item.cube.unit }}</a></li>
+    <li class="active">Item</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Cube</b>
+                        <a href="{% url 'view_cube' cube_id=item.cube.id %}" class="pull-right">
+                            <b>
+                            {{ item.cube.unit }}
+                            </b>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Code</b>
+                        <span class="pull-right text-muted">{{ item.code }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Quantity</b>
+                        <span class="pull-right text-muted">{{ item.quantity }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Price</b>
+                        <span class="pull-right text-muted">{{ item.price }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Commission</b>
+                        <span class="pull-right text-muted">
+                            {{ item.vat }}% VAT + {{ item.vat }}% Sales
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Description</b>
+                        <span class="pull-right text-muted">{{ item.description }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

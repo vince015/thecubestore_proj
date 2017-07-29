@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load mathfilters %}
 {% load staticfiles %}
 {% block pagetitle %}Dashboard{% endblock %}
 
@@ -12,14 +13,15 @@
 </ol>
 {% endblock %}
 
-{% block main %}      
-    <!--<div class="row">
+{% block main %}
+    <div class="row">
         <section class="col-lg-7 connectedSortable">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#items" data-toggle="tab">Items</a></li>
                     <li><a href="#sales" data-toggle="tab">Sales</a></li>
                     <li><a href="#merchants" data-toggle="tab">Merchants</a></li>
+                    <li><a href="#payouts" data-toggle="tab">Payouts</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="active tab-pane" id="items">
@@ -39,8 +41,8 @@
                                         <form action="{% url 'sales_add' %}" method="post">
                                         {% csrf_token %}
                                         <td>
-                                            <a href="{% url 'item_view' item_id=item.id %}">
-                                                {{ item.name }}
+                                            <a href="{% url 'item_detail' item_id=item.id %}">
+                                                {{ item.code }}
                                             </a>
                                             <input type="hidden" name="item" value="{{ item.id }}">
                                         </td>
@@ -50,7 +52,7 @@
                                         <td>
                                             {{ item.price }}
                                         </td>
-                                        <td>   
+                                        <td>
                                             <input type="number"
                                                    name="quantity"
                                                    id="quantityInput"
@@ -73,23 +75,50 @@
                         </table>
                     </div>
                     <div class="tab-pane" id="sales">
+                        <div class="col-lg-6 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-blue">
+                                <div class="inner">
+                                    <h3>{{ total_expected }}<sup style="font-size: 20px">Php</sup></h3>
+
+                                    <p>Sales</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-green">
+                                <div class="inner">
+                                    <h3>{{ total_earnings }}<sup style="font-size: 20px">Php</sup></h3>
+
+                                    <p>Earnings</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+
                         <table id="sales_table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Item</th>
+                                    <th>Code</th>
                                     <th>Date</th>
                                     <th>Quantity</th>
-                                    <th>Final Sales</th>
-                                    <th>Owner</th>
+                                    <th>Price</th>
+                                    <th>Gross</th>
+                                    <th>Net</th>
+                                    <th>Payout</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for sale in sales %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'item_view' item_id=sale.item.id %}">
-                                                {{ sale.item.name }}
-                                            </a>
+                                            {{ sale.item }}
                                         </td>
                                         <td>
                                             {{ sale.date }}
@@ -98,11 +127,22 @@
                                             {{ sale.quantity }}
                                         </td>
                                         <td>
+                                            {{ sale.gross|div:sale.quantity }}
+                                        </td>
+                                        <td>
+                                            {{ sale.gross }}
+                                        </td>
+                                        <td>
                                             {{ sale.net }}
                                         </td>
                                         <td>
-                                            {{ sale.item.cube.profile.user.first_name }}
-                                            {{ sale.item.cube.profile.user.last_name }}
+                                            {% if sale.payout %}
+                                                <a href="{% url 'payout_detail' payout_id=sale.payout %}">
+                                                    {{ sale.payout }}
+                                                </a>
+                                            {% else %}
+                                                <i>Unpaid</i>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor%}
@@ -113,29 +153,73 @@
                         <table id="merchants_table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Name</th>
-                                    <th>Username</th>
                                     <th>Contact Number</th>
-                                    <th>Cubes</th>
+                                    <th>Next Due Date</th>
+                                    <th>Cube</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for merchant in merchants %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'profile_view' user_id=merchant.profile.user.id %}">
-                                                {{ merchant.profile.user.first_name }}
-                                                {{ merchant.profile.user.last_name }}
+                                            <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
+                                                {{ merchant.profile.id|stringformat:"05d" }}
                                             </a>
                                         </td>
                                         <td>
-                                            {{ merchant.profile.user.username }}
+                                            <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
+                                                {{ merchant.profile.first_name }}
+                                                {{ merchant.profile.last_name }}
+                                            </a>
                                         </td>
                                         <td>
-                                            {{ merchant.profile.contact_number }}
+                                            {{ merchant.contact.contact_number }}
                                         </td>
                                         <td>
-                                            {{ merchant.cubes|length }}
+                                            {{ merchant.cube.next_due_date }}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'cube_detail' cube_id=merchant.cube.id %}">
+                                                {{ merchant.cube.unit }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane" id="payouts">
+                        <table id="payout_table" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Payout ID</th>
+                                    <th>Merchant ID</th>
+                                    <th>Date</th>
+                                    <th>Bank</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payout in payouts %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'payout_detail' payout_id=payout.id %}">
+                                                {{ payout.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{ payout.merchant.id|stringformat:"05d" }}
+                                        </td>
+                                        <td>
+                                            {{ payout.date }}
+                                        </td>
+                                        <td>
+                                            {{ payout.bank.bank }} - {{ payout.bank.account }}
+                                        </td>
+                                        <td>
+                                            {{ payout.amount }}
                                         </td>
                                     </tr>
                                 {% endfor%}
@@ -145,7 +229,7 @@
                 </div>
             </div>
         </section>
-    </div>-->
+    </div>
     <!-- end Main row -->
 {% endblock %}
 
@@ -173,6 +257,15 @@
         });
 
         $('#merchants_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        });
+
+        $('#payout_table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : true,

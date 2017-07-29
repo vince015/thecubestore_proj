@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -8,6 +9,7 @@ from django.contrib.auth.models import User
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
 
+from system_app.models import Item, Sales, Payout, Contact, Cube, Payout
 
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
@@ -19,8 +21,8 @@ def user_login(request):
 
     try:
         # Redirection
-        template = 'login.html'
-        next = request.GET.get('next', '/system')
+        template = 'system_app/login.html'
+        next = request.GET.get('next', '/system/dashboard')
 
         context_dict = dict()
         context_dict['redirect_to'] = next
@@ -49,7 +51,7 @@ def user_login(request):
 def user_logout(request):
 
     logout(request)
-    return HttpResponseRedirect('/system')
+    return HttpResponseRedirect('/system/login/')
 
 @login_required
 def dashboard(request):
@@ -63,8 +65,34 @@ def dashboard(request):
 
         # Get user info
         if is_member(user, 'Staff'):
-            pass
+            items = Item.objects.all()
+            context_dict['items'] = items
 
+            sales = Sales.objects.all().order_by('-date')
+            context_dict['sales'] = sales
+
+            total_earnings = 0
+            total_expected = 0
+            for sale in sales:
+                if not sale.payout:
+                    total_expected = total_expected + sale.net
+                else:
+                    total_earnings = total_earnings + sale.net
+            context_dict['total_expected'] = total_expected
+            context_dict['total_earnings'] = total_earnings
+
+            payouts = Payout.objects.all().order_by('-date')
+            context_dict['payouts'] = payouts
+
+            context_dict['merchants'] = list()
+            cubes = Cube.objects.all().order_by('-next_due_date')
+            for cube in cubes:
+                merchant = cube.user
+                contact = Contact.objects.filter(user=merchant).first()
+
+                context_dict['merchants'].append({'profile': merchant,
+                                                  'contact': contact,
+                                                  'cube': cube})
         else:
             raise PermissionDenied
 
@@ -73,7 +101,8 @@ def dashboard(request):
         raise
            
     except Exception as ex:
-        logout(request)
+        raise
+        # logout(request)
         return server_error(request)
 
     return render(request, template, context_dict)

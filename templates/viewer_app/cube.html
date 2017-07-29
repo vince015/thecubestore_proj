@@ -1,0 +1,118 @@
+{% extends "viewer_app/base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Cube{% endblock %}
+
+{% block navbarmenu %}
+<div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="#">{{ user.username }}</a>
+        </li>
+        <li>
+            <a href="{% url 'viewer_logout' %}"><i class="fa fa-sign-out"></i></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Cube
+    <small>{{ cube.unit }}</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profile</a></li>
+    <li class="active">Cube</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Unit</b>
+                        <span class="pull-right text-muted">{{ cube.unit }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Duration</b>
+                        <span class="pull-right text-muted">{{ cube.duration }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Promo</b>
+                        <span class="pull-right text-muted">{{ cube.promo }} Months</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Start Date</b>
+                        <span class="pull-right text-muted">{{ cube.start_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>End Date</b>
+                        <span class="pull-right text-muted">{{ cube.end_date }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Next Due Date</b>
+                        <span class="pull-right text-muted">{{ cube.next_due_date }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="cube-item">
+    <div class="col-md-12">
+        <div class="box">
+            {% if items %}
+            <div class="box-body">
+                <table id="item_table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'view_item' item_id=item.id %}">
+                                        {{ item.code }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ item.quantity }}
+                                </td>
+                                <td>
+                                    {{ item.price }}
+                                </td>
+                            </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#item_table').DataTable({
+            'paging'      : false,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+        })
+    })
+</script>
+{% endblock %}
