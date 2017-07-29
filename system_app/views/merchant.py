@@ -161,7 +161,7 @@ def change_password(request):
 def contact_edit(request, contact_id):
 
     try:
-        template = 'system_app/contact/edit.html'
+        template = 'system_app/merchant/contact_edit.html'
         context_dict = dict()
 
         instance = Contact.objects.get(id=contact_id)
@@ -194,7 +194,7 @@ def contact_edit(request, contact_id):
 def store_edit(request, store_id):
 
     try:
-        template = 'system_app/store/edit.html'
+        template = 'system_app/merchant/store_edit.html'
         context_dict = dict()
 
         instance = Store.objects.get(id=store_id)
@@ -227,7 +227,7 @@ def store_edit(request, store_id):
 def bank_edit(request, bank_id):
 
     try:
-        template = 'system_app/bank/edit.html'
+        template = 'system_app/merchant/bank_edit.html'
         context_dict = dict()
 
         instance = Bank.objects.get(id=bank_id)

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "system_app/base.html" %}
 
 {% load staticfiles %}
 {% block pagetitle %}Cubes{% endblock %}
@@ -19,7 +19,7 @@
     <div class="callout callout-warning">
         <p>Are you sure you want to delete this cube?</p>
         <form action="{% url 'cube_delete' cube_id=cube.id %}" method="post">
-            {% csrf_token %}            
+            {% csrf_token %}
             <a href="{% url 'cube_detail' cube_id=cube.id %}" class="pull-right">Back</a>
             <button type="submit" class="btn btn-default btn-sm">Yes</button>
         </form>

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "system_app/base.html" %}
 
 {% load staticfiles %}
 {% block pagetitle %}Payouts{% endblock %}
@@ -19,7 +19,7 @@
     <div class="callout callout-warning">
         <p>Are you sure you want to delete this payout?</p>
         <form action="{% url 'payout_delete' payout_id=payout.id %}" method="post">
-            {% csrf_token %}            
+            {% csrf_token %}
             <a href="{% url 'payout_detail' payout_id=payout.id %}" class="pull-right">Back</a>
             <button type="submit" class="btn btn-default btn-sm">Yes</button>
         </form>
@@ -60,7 +60,7 @@
                     <li class="list-group-item">
                         <b>Bank Account</b>
                         <span class="pull-right text-muted">
-                            {{ payout.bank.bank }} ({{ payout.bank.account }}) 
+                            {{ payout.bank.bank }} ({{ payout.bank.account }})
                         </span>
                     </li>
                     <li class="list-group-item">

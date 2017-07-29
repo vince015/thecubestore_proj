@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "system_app/base.html" %}
 
 {% load staticfiles %}
 {% block pagetitle %}Merchants{% endblock %}
@@ -6,13 +6,13 @@
 {% block breadcrumb %}
 <h1>
     {{ form.instance.user.first_name }} {{ form.instance.user.last_name }}'s
-    <small>BANK DETAILS</small>
+    <small>STORE</small>
 </h1>
 <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
     <li><a href="{% url 'merchant_all' %}">Merchants</a></li>
     <li><a href="{% url 'merchant_detail' user_id=form.instance.user.id %}">Profile</a></li>
-    <li><a class="active">Bank Details</a></li>
+    <li><a class="active">Store</a></li>
 </ol>
 {% endblock %}
 
@@ -30,60 +30,94 @@
 
 {% block main %}
     <div class="row">
-        <form action="{% url 'bank_edit' bank_id=form.instance.id %}" method="post">
+        <form action="{% url 'store_edit' store_id=form.instance.id %}" method="post">
         {% csrf_token %}
             <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-body">
-                        {% if form.bank.errors %}
+                        {% if form.name.errors %}
                         <div class="form-group has-error">
                         {% else %}
                         <div class="form-group">
                         {% endif %}
-                            <label for="{{ form.bank.id_for_label }}">
-                                Bank Name
+                            <label for="{{ form.name.id_for_label }}">
+                                Store Name
                                 <ul>
-                                {% for error in form.bank.errors %}
+                                {% for error in form.name.errors %}
                                     <li>{{ error }}</li>
                                 {% endfor %}
                                 </ul>
                             </label>
                             <!-- widget -->
-                            {{ form.bank }}
+                            {{ form.name }}
                         </div>
 
-                        {% if form.account.errors %}
+                        {% if form.product.errors %}
                         <div class="form-group has-error">
                         {% else %}
                         <div class="form-group">
                         {% endif %}
-                            <label for="{{ form.account.id_for_label }}">
-                                Bank Account
+                            <label for="{{ form.product.id_for_label }}">
+                                Product Description
                                 <ul>
-                                {% for error in form.account.errors %}
+                                {% for error in form.product.errors %}
                                     <li>{{ error }}</li>
                                 {% endfor %}
                                 </ul>
                             </label>
                             <!-- widget -->
-                            {{ form.account }}
+                            {{ form.product }}
                         </div>
 
-                        {% if form.owner.errors %}
+                        {% if form.facebook.errors %}
                         <div class="form-group has-error">
                         {% else %}
                         <div class="form-group">
                         {% endif %}
-                            <label for="{{ form.owner.id_for_label }}">
-                                Bank Account Owner
+                            <label for="{{ form.facebook.id_for_label }}">
+                                Facebook Page
                                 <ul>
-                                {% for error in form.owner.errors %}
+                                {% for error in form.facebook.errors %}
                                     <li>{{ error }}</li>
                                 {% endfor %}
                                 </ul>
                             </label>
                             <!-- widget -->
-                            {{ form.owner }}
+                            {{ form.facebook }}
+                        </div>
+
+                        {% if form.instagram.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.instagram.id_for_label }}">
+                                Instagram Page
+                                <ul>
+                                {% for error in form.instagram.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.instagram }}
+                        </div>
+
+                        {% if form.website.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.website.id_for_label }}">
+                                Website
+                                <ul>
+                                {% for error in form.website.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.website }}
                         </div>
                     </div>
                     <div class="box-footer">

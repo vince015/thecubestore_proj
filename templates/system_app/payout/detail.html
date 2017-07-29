@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "system_app/base.html" %}
 
 {% load staticfiles %}
 {% block pagetitle %}Payouts{% endblock %}
@@ -53,7 +53,7 @@
                     <li class="list-group-item">
                         <b>Bank Account</b>
                         <span class="pull-right text-muted">
-                            {{ payout.bank.bank }} ({{ payout.bank.account }}) 
+                            {{ payout.bank.bank }} ({{ payout.bank.account }})
                         </span>
                     </li>
                     <li class="list-group-item">

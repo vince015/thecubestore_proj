@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "system_app/base.html" %}
 
 {% load mathfilters %}
 {% load staticfiles %}
@@ -38,7 +38,7 @@
                             {% for sale in sales %}
                                 <tr>
                                     <td>
-                                      <input type="checkbox" name="sales" value="{{ sale.id }}">  
+                                      <input type="checkbox" name="sales" value="{{ sale.id }}">
                                     </td>
                                     <td>
                                         {{ sale.item }}
