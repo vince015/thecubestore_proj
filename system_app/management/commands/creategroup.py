@@ -9,7 +9,6 @@ class Command(BaseCommand):
 
         if not Group.objects.filter(name='Staff').exists():
             group = Group.objects.create(name='Staff')
-            group.permissions.add(contact_permission)
 
         if not Group.objects.filter(name='Merchant').exists():
             Group.objects.create(name='Merchant')
