@@ -125,6 +125,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#cube" data-toggle="tab">Cubes</a></li>
                 <li><a href="#payout" data-toggle="tab">Payouts</a></li>
+                <li><a href="#sales" data-toggle="tab">Sales</a></li>
             </ul>
             <div class="tab-content">
                 <div id="cube" class="active tab-pane">
@@ -149,7 +150,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    {{ cube.next_due_date }}
+                                    {{ cube.next_due_date|date:'Y-m-d' }}
                                 </td>
                                 <td>
                                     <a href="{% url 'cube_edit' cube_id=cube.id %}" class="pull-right">
@@ -161,6 +162,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div id="payout" class="tab-pane">
                     <table id="payout_table" class="table table-bordered table-striped">
                         <thead>
@@ -184,7 +186,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    {{ payout.date }}
+                                    {{ payout.date|date:'Y-m-d' }}
                                 </td>
                                 <td>
                                     {{ payout.amount }}
@@ -193,6 +195,63 @@
                                     <a href="{% url 'payout_edit' payout_id=payout.id %}" class="pull-right">
                                         <i class="fa fa-pencil"></i>
                                     </a>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="sales" class="tab-pane">
+                    <div class="col-lg-12 col-xs-12 ">
+                        <div class="small-box bg-blue">
+                            <div class="inner">
+                                <h3>{{ unpaid }}<sup style="font-size: 20px">Php</sup></h3>
+                                <p>Sales</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-cash"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table id="sales_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Gross</th>
+                                <th>Net</th>
+                                <th>Payout</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>
+                                    {{ sale.item }}
+                                </td>
+                                <td>
+                                    {{ sale.date|date:'Y-m-d' }}
+                                </td>
+                                <td>
+                                    {{ sale.quantity }}
+                                </td>
+                                <td>
+                                    {{ sale.gross }}
+                                </td>
+                                <td>
+                                    {{ sale.net }}
+                                </td>
+                                <td>
+                                    {% if sale.payout %}
+                                        <a href="{% url 'view_payout' payout_id=sale.payout %}">
+                                            {{ sale.payout }}
+                                        </a>
+                                    {% else %}
+                                        --
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor%}
@@ -216,7 +275,8 @@
             'searching'   : false,
             'ordering'    : true,
             'info'        : true,
-            'autoWidth'   : false
+            'autoWidth'   : false,
+            'order'       : [[1, 'desc']]
         });
         $('#payout_table').DataTable({
             'paging'      : true,
@@ -224,7 +284,17 @@
             'searching'   : false,
             'ordering'    : true,
             'info'        : true,
-            'autoWidth'   : false
+            'autoWidth'   : false,
+            'order'       : [[1, 'desc']]
+        });
+        $('#sales_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'order'       : [[1, 'desc']]
         })
     })
 </script>

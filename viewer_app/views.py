@@ -110,27 +110,21 @@ def profile(request):
             if bank:
                 context_dict['bank']  = bank
 
-            cubes = Cube.objects.filter(user=user)
+            cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
             context_dict['cubes'] = cubes
 
             merchant_item_code = '{0:05}'.format(user.id)
-            sales = Sales.objects.filter(item__startswith=merchant_item_code)
-            cht = create_pie_chart(sales)
+            sales = Sales.objects.filter(item__startswith=merchant_item_code).order_by('-date')
             context_dict['sales'] = sales
-            context_dict['weatherchart'] = cht
 
             # Get Sales
-            paid = 0
             unpaid = 0
             for sale in sales:
                 if not sale.payout:
                     unpaid = unpaid + sale.net
-                else:
-                    paid = paid + sale.net
-            context_dict['paid'] = paid
             context_dict['unpaid'] = unpaid
 
-            payouts = Payout.objects.filter(merchant=user)
+            payouts = Payout.objects.filter(merchant=user).order_by('-date')
             context_dict['payouts'] = payouts
 
             earnings = 0
@@ -197,10 +191,10 @@ def payout(request, payout_id):
         template = 'viewer_app/payout.html'
         context_dict = dict()
 
-        payout = Payout.objects.get(id=payout_id)
+        payout = Payout.objects.get(id=payout_id).order_by('-date')
         context_dict['payout'] = payout
 
-        sales = Sales.objects.filter(payout=payout.id)
+        sales = Sales.objects.filter(payout=payout.id).order_by('-date')
         context_dict['sales'] = sales
 
         sale_sum = 0

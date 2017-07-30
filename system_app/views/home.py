@@ -26,7 +26,7 @@ def user_login(request):
 
         context_dict = dict()
         context_dict['redirect_to'] = next
-     
+
         if request.method == "POST":
             username = request.POST['username']
             password = request.POST['password']
@@ -71,15 +71,11 @@ def dashboard(request):
             sales = Sales.objects.all().order_by('-date')
             context_dict['sales'] = sales
 
-            total_earnings = 0
-            total_expected = 0
+            unpaid = 0
             for sale in sales:
                 if not sale.payout:
-                    total_expected = total_expected + sale.net
-                else:
-                    total_earnings = total_earnings + sale.net
-            context_dict['total_expected'] = total_expected
-            context_dict['total_earnings'] = total_earnings
+                    unpaid = unpaid + sale.net
+            context_dict['unpaid'] = unpaid
 
             payouts = Payout.objects.all().order_by('-date')
             context_dict['payouts'] = payouts
@@ -99,10 +95,9 @@ def dashboard(request):
     except PermissionDenied:
         logout(request)
         raise
-           
+
     except Exception as ex:
-        raise
-        # logout(request)
+        logout(request)
         return server_error(request)
 
     return render(request, template, context_dict)

@@ -11,7 +11,7 @@ from django.views.defaults import server_error
 
 
 from system_app.forms.merchant import MerchantForm, ContactForm, StoreForm, BankForm
-from system_app.models import Contact, Store, Bank, Cube, Payout
+from system_app.models import Contact, Store, Bank, Cube, Payout, Sales
 
 @login_required
 def detail(request, user_id):
@@ -35,11 +35,22 @@ def detail(request, user_id):
         if bank:
             context_dict['bank']  = bank
 
-        cubes = Cube.objects.filter(user=user)
+        cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
         context_dict['cubes'] = cubes
 
-        payouts = Payout.objects.filter(merchant=user)
+        payouts = Payout.objects.filter(merchant=user).order_by('-date')
         context_dict['payouts'] = payouts
+
+        merchant_item_code = '{0:05}'.format(user.id)
+        sales = Sales.objects.filter(item__startswith=merchant_item_code).order_by('-date')
+        context_dict['sales'] = sales
+
+        # Get Sales
+        unpaid = 0
+        for sale in sales:
+            if not sale.payout:
+                unpaid = unpaid + sale.net
+        context_dict['unpaid'] = unpaid
 
     except ObjectDoesNotExist:
         raise Http404
