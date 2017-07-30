@@ -12,7 +12,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
 
-from system_app.models import Contact, Store, Bank, Cube, Payout, Item, Sales
+from system_app.models import Contact, Store, Bank
+from system_app.models import Cube, Payout, Item, Sales
+
 
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
@@ -111,6 +113,23 @@ def profile(request):
             cubes = Cube.objects.filter(user=user)
             context_dict['cubes'] = cubes
 
+            merchant_item_code = '{0:05}'.format(user.id)
+            sales = Sales.objects.filter(item__startswith=merchant_item_code)
+            cht = create_pie_chart(sales)
+            context_dict['sales'] = sales
+            context_dict['weatherchart'] = cht
+
+            # Get Sales
+            paid = 0
+            unpaid = 0
+            for sale in sales:
+                if not sale.payout:
+                    unpaid = unpaid + sale.net
+                else:
+                    paid = paid + sale.net
+            context_dict['paid'] = paid
+            context_dict['unpaid'] = unpaid
+
             payouts = Payout.objects.filter(merchant=user)
             context_dict['payouts'] = payouts
 
@@ -124,7 +143,7 @@ def profile(request):
     except PermissionDenied:
         logout(request)
         raise
-           
+
     except:
         raise
         return server_error(request)
