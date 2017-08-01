@@ -7,6 +7,7 @@ class CubeForm(forms.ModelForm):
         model = Cube
         fields = [
                     'unit',
+                    'rate',
                     'duration',
                     'promo',
                     'start_date',
@@ -16,6 +17,9 @@ class CubeForm(forms.ModelForm):
         widgets = {
                     'unit': forms.TextInput(attrs={'class': 'form-control',
                                                    'placeholder': 'Unit'}),
+                    'rate': forms.NumberInput(attrs={'step': 0.25,
+                                                     'class': 'form-control',
+                                                     'placeholder': 'Monthly Rate'}),
                     'duration': forms.NumberInput(attrs={'class': 'form-control',
                                                          'placeholder': 'Lease duration'}),
                     'promo': forms.NumberInput(attrs={'class': 'form-control',

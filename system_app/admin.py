@@ -53,9 +53,9 @@ class BankAdmin(admin.ModelAdmin):
 admin.site.register(Bank, BankAdmin)
 
 class CubeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'merchant', 'unit', 'duration', 'promo', 'start_date', 'end_date', 'next_due_date')
+    list_display = ('id', 'merchant', 'unit', 'duration', 'rate', 'promo', 'start_date', 'end_date', 'next_due_date')
     list_display_links = ['id']
-    search_fields = ('unit', 'duration', 'promo', 'start_date', 'end_date', 'next_due_date')
+    search_fields = ('unit', 'duration', 'rate', 'promo', 'start_date', 'end_date', 'next_due_date')
     list_per_page = 50
 
     def merchant(self, obj):
@@ -82,10 +82,10 @@ class PayoutResource(resources.ModelResource):
 
     class Meta:
         model = Payout
-        fields = ('id', 'bank__bank', 'bank__account', 'bank__owner', 'date', 'amount')
+        fields = ('id', 'reference_number', 'bank__bank', 'bank__account', 'bank__owner', 'date', 'amount', 'remarks')
 
 class PayoutAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'merchant', 'bank_account', 'date', 'amount')
+    list_display = ('id', 'merchant', 'reference_number', 'bank_account', 'date', 'amount', 'remarks')
     list_display_links = ['id']
     search_fields = ['id']
     list_per_page = 50

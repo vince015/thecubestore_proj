@@ -39,6 +39,10 @@
                         <span class="pull-right text-muted">{{ cube.duration }} Months</span>
                     </li>
                     <li class="list-group-item">
+                        <b>Monthly Rate</b>
+                        <span class="pull-right text-muted">Php {{ cube.rate }}</span>
+                    </li>
+                    <li class="list-group-item">
                         <b>Promo</b>
                         <span class="pull-right text-muted">{{ cube.promo }} Months</span>
                     </li>
@@ -81,6 +85,7 @@
                             <th>Code</th>
                             <th>Stock</th>
                             <th>Price</th>
+                            <th>Description</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -97,6 +102,9 @@
                                 </td>
                                 <td>
                                     {{ item.price }}
+                                </td>
+                                <td>
+                                    {{ item.description }}
                                 </td>
                                 <td>
                                     <a href="#" class="pull-right">

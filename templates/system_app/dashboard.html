@@ -29,6 +29,7 @@
                             <thead>
                                 <tr>
                                     <th>Item</th>
+                                    <th>Desciption</th>
                                     <th>Stock</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
@@ -45,6 +46,9 @@
                                                 {{ item.code }}
                                             </a>
                                             <input type="hidden" name="item" value="{{ item.id }}">
+                                        </td>
+                                        <td>
+                                            {{ item.description }}
                                         </td>
                                         <td>
                                             {{ item.quantity }}

@@ -6,14 +6,20 @@ class PayoutForm(forms.ModelForm):
     class Meta:
         model = Payout
         fields = [
+                    'reference_number',
                     'date',
                     'amount',
+                    'remarks'
                 ]
         widgets = {
+                    'reference_number': forms.TextInput(attrs={'class': 'form-control',
+                                                               'placeholder': 'Reference number'}),
                     'date': forms.DateInput(format='%m/%d/%Y',
                                             attrs={'class': 'form-control datepicker',
                                                    'placeholder': 'Date of payout'}),
                     'amount': forms.NumberInput(attrs={'step': 0.25,
                                                        'class': 'form-control',
                                                        'placeholder': 'Amount deposited'}),
+                    'remarks': forms.Textarea(attrs={'class': 'form-control',
+                                                     'placeholder': 'Remarks'})
                 }

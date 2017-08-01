@@ -137,6 +137,9 @@
                             <tr>
                                 <th>Unit</th>
                                 <th>Next Due Date</th>
+                                <th>Monthly Rate</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,6 +152,15 @@
                                 </td>
                                 <td>
                                     {{ cube.next_due_date|date:'Y-m-d' }}
+                                </td>
+                                <td>
+                                    {{ cube.rate }}
+                                </td>
+                                <td>
+                                    {{ cube.start_date|date:'Y-m-d' }}
+                                </td>
+                                <td>
+                                    {{ cube.end_date|date:'Y-m-d' }}
                                 </td>
                             </tr>
                             {% endfor%}
@@ -174,6 +186,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Reference Number</th>
                                 <th>Date</th>
                                 <th>Amount</th>
                             </tr>
@@ -185,6 +198,9 @@
                                     <a href="{% url 'view_payout' payout_id=payout.id %}">
                                         {{ payout.id }}
                                     </a>
+                                </td>
+                                <td>
+                                    {{ payout.reference_number }}
                                 </td>
                                 <td>
                                     {{ payout.date|date:'Y-m-d' }}
@@ -242,10 +258,10 @@
                                 <td>
                                     {% if sale.payout %}
                                         <a href="{% url 'view_payout' payout_id=sale.payout %}">
-                                            {{ sale.payout }}
+                                            <b>{{ sale.payout }}</b>
                                         </a>
                                     {% else %}
-                                        --
+                                        <span class="text-muted">Unpaid</span>
                                     {% endif %}
                                 </td>
                             </tr>

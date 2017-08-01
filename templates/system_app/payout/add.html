@@ -38,7 +38,24 @@
                             {{ merchant.first_name }} {{ merchant.last_name }}
                         </a>
                     </div>
-                        <div class="box-body">
+                    <div class="box-body">
+                        {% if form.reference_number.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.reference_number.id_for_label }}">
+                                Reference Number
+                                <ul>
+                                {% for error in form.reference_number.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.reference_number }}
+                        </div>
+
                         {% if form.date.errors %}
                         <div class="form-group has-error">
                         {% else %}
@@ -71,6 +88,24 @@
                             </label>
                             <!-- widget -->
                             {{ form.amount }}
+                        </div>
+
+                        <div class="box-body">
+                        {% if form.remarks.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.remarks.id_for_label }}">
+                                Remarks
+                                <ul>
+                                {% for error in form.remarks.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.remarks }}
                         </div>
                     </div>
                     <div class="box-footer">

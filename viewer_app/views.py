@@ -191,7 +191,7 @@ def payout(request, payout_id):
         template = 'viewer_app/payout.html'
         context_dict = dict()
 
-        payout = Payout.objects.get(id=payout_id).order_by('-date')
+        payout = Payout.objects.get(id=payout_id)
         context_dict['payout'] = payout
 
         sales = Sales.objects.filter(payout=payout.id).order_by('-date')

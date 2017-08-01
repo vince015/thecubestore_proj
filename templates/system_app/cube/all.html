@@ -23,7 +23,9 @@
                         <thead>
                             <tr>
                                 <th>Unit</th>
+                                <th>Next Due Date</th>
                                 <th>Current Lease</th>
+                                <th>Monthly Rate</th>
                                 <th>Owner</th>
                             </tr>
                         </thead>
@@ -36,7 +38,13 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {{ cube.start_date }}-{{ cube.end_date }}
+                                        {{ cube.next_due_date }}
+                                    </td>
+                                    <td>
+                                        {{ cube.start_date }} - {{ cube.end_date }}
+                                    </td>
+                                    <td>
+                                        {{ cube.rate }}
                                     </td>
                                     <td>
                                         <a href="{% url 'merchant_detail' user_id=cube.user.id %}">

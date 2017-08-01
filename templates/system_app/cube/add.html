@@ -78,6 +78,23 @@
                             {{ form.duration }}
                         </div>
 
+                        {% if form.rate.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.rate.id_for_label }}">
+                                Monthly Rate
+                                <ul>
+                                {% for error in form.rate.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.rate }}
+                        </div>
+
                         {% if form.promo.errors %}
                         <div class="form-group has-error">
                         {% else %}

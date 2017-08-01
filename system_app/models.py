@@ -1,5 +1,7 @@
+import decimal
+
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 
 
@@ -68,6 +70,10 @@ class Cube(models.Model):
     unit = models.CharField(blank=False,
                             max_length=128,
                             null=True)
+    rate = models.DecimalField(max_digits=7,
+                               decimal_places=2,
+                               null=True,
+                               validators=[MinValueValidator(decimal.Decimal('0.01'))])
     duration = models.PositiveSmallIntegerField(blank=True,
                                                 null=True)
     promo = models.PositiveSmallIntegerField(blank=True,
@@ -92,7 +98,8 @@ class Item(models.Model):
                                                 null=True)
     price = models.DecimalField(max_digits=7,
                                 decimal_places=2,
-                                null=True)
+                                null=True,
+                                validators=[MinValueValidator(decimal.Decimal('0.01'))])
     vat = models.DecimalField(default=0,
                               max_digits=3,
                               decimal_places=2,
@@ -116,11 +123,16 @@ class Payout(models.Model):
                              blank=True,
                              null=True,
                              default=0)
+    reference_number = models.CharField(max_length=64,
+                                        blank=False,
+                                        null=True)
     date = models.DateField(blank=False)
     amount = models.DecimalField(blank=False,
                                  max_digits=7,
                                  decimal_places=2,
                                  null=True)
+    remarks = models.CharField(max_length=256,
+                               null=True)
 
 class Sales(models.Model):
 
