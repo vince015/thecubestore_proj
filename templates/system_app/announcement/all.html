@@ -1,0 +1,66 @@
+{% extends "system_app/base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Payouts{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Announcements
+    <small>ALL</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li class="active">Announcements</li>
+</ol>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="announcement_table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date Issued</th>
+                                <th>Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for announcement in announcements %}
+                                <tr>
+                                    <td>
+                                        {{ announcement.issue_date|date:'Y-m-d' }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'announcement_detail' announcement_id=announcement.id %}">
+                                            {{ announcement.subject}}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(function () {
+        $('#announcement_table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'order'       : [[0, 'desc']]
+        })
+    })
+</script>
+{% endblock %}

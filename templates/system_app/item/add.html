@@ -39,6 +39,23 @@
                         </a>
                     </div>
                     <div class="box-body">
+                        {% if form.code.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.code.id_for_label }}">
+                                Item Code
+                                <ul>
+                                {% for error in form.code.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.code }}
+                        </div>
+
                         {% if form.quantity.errors %}
                         <div class="form-group has-error">
                         {% else %}

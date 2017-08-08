@@ -6,6 +6,7 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = [
+                    'code',
                     'quantity',
                     'price',
                     'vat',
@@ -13,6 +14,8 @@ class ItemForm(forms.ModelForm):
                     'description',
                 ]
         widgets = {
+                    'code': forms.TextInput(attrs={'class': 'form-control',
+                                                   'placeholder': 'Item Code'}),
                     'quantity': forms.NumberInput(attrs={'class': 'form-control',
                                                          'placeholder': 'Quantity'}),
                     'price': forms.NumberInput(attrs={'step': 0.25,

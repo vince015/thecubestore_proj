@@ -1,0 +1,106 @@
+{% extends "system_app/base.html" %}
+
+{% load staticfiles %}
+{% block pagetitle %}Announcements{% endblock %}
+
+{% block breadcrumb %}
+<h1>
+    Announcements
+    <small>ADD</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{% url 'announcement_all' %}">announcements</a></li>
+    <li class="active">Add</li>
+</ol>
+{% endblock %}
+
+{% block callouts %}
+    {% if form.non_field_errors %}
+    <div class="callout callout-danger">
+        <ul>
+        {% for error in form.non_field_errors %}
+            <li><strong>{{ error|escape }}</strong></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <form action="{% url 'announcement_add' %}" method="post">
+        {% csrf_token %}
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        {% if form.issue_date.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.issue_date.id_for_label }}">
+                                Date Issued
+                                <ul>
+                                {% for error in form.issue_date.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.issue_date }}
+                        </div>
+
+                        {% if form.subject.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.subject.id_for_label }}">
+                                Subject
+                                <ul>
+                                {% for error in form.subject.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.subject }}
+                        </div>
+
+                        <div class="box-body">
+                        {% if form.detail.errors %}
+                        <div class="form-group has-error">
+                        {% else %}
+                        <div class="form-group">
+                        {% endif %}
+                            <label for="{{ form.detail.id_for_label }}">
+                                Details
+                                <ul>
+                                {% for error in form.detail.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.detail }}
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script>
+    $(document).ready(function() {
+        $('.datepicker').datepicker({
+            autoclose: true,
+        });
+    });
+</script>
+{% endblock %}

@@ -4,10 +4,22 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 
+class Profile(models.Model):
+
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE,
+                                blank=False,
+                                null=True)
+
+    merchant_id = models.CharField(primary_key=True,
+                                   unique=True,
+                                   max_length=64)
+    remarks = models.CharField(max_length=256,
+                               blank=True,
+                               null=True)
 
 class Contact(models.Model):
 
-    # Validator for phone number
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE,
                                 blank=False,
@@ -83,7 +95,11 @@ class Cube(models.Model):
                                   null=True)
     end_date = models.DateField(blank=True,
                                 null=True)
-    next_due_date = models.DateField(null=True)
+    next_due_date = models.DateField(null=True,
+                                     blank=True)
+    remarks = models.CharField(max_length=256,
+                               blank=True,
+                               null=True)
 
 class Item(models.Model):
 
@@ -152,3 +168,14 @@ class Sales(models.Model):
     payout = models.IntegerField(blank=True,
                                  null=True,
                                  default=0)
+
+class Announcement(models.Model):
+
+    issue_date = models.DateField(blank=False,
+                                  null=True)
+    subject = models.CharField(max_length=128,
+                               blank=False,
+                               null=True)
+    detail = models.CharField(max_length=2048,
+                              blank=False,
+                              null=True)

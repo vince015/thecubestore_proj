@@ -85,7 +85,7 @@
                                 <div class="inner">
                                     <h3>{{ unpaid }}<sup style="font-size: 20px">Php</sup></h3>
 
-                                    <p>Sales</p>
+                                    <p>Unpaid Sales</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-stats-bars"></i>
@@ -156,7 +156,7 @@
                                     <tr>
                                         <td>
                                             <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
-                                                {{ merchant.profile.id|stringformat:"05d" }}
+                                                {{ merchant.profile.merchant_id }}
                                             </a>
                                         </td>
                                         <td>

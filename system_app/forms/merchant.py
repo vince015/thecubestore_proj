@@ -1,5 +1,5 @@
 from django import forms
-from system_app.models import Contact, Store, Bank
+from system_app.models import Contact, Store, Bank, Profile
 
 class ContactForm(forms.ModelForm):
 
@@ -63,8 +63,28 @@ class BankForm(forms.ModelForm):
                                                       'placeholder': 'Bank account number'}),
                 }
 
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = [
+                    'merchant_id',
+                    'remarks'
+                ]
+        widgets = {
+                    'merchant_id': forms.TextInput(attrs={'class': 'form-control',
+                                                    'placeholder': 'Merchant ID'}),
+                    'remarks': forms.Textarea(attrs={'class': 'form-control',
+                                                   'placeholder': 'Remarks'}),
+                }
+
 class MerchantForm(forms.Form):
 
+    merchant_id = forms.CharField(max_length=64,
+                                  required=True,
+                                  label='Merchant ID',
+                                  widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                'placeholder': 'Merchant ID'}))
     username = forms.CharField(max_length=150,
                                min_length=3,
                                required=True,
@@ -95,6 +115,12 @@ class MerchantForm(forms.Form):
                                label='Last name',
                                widget=forms.TextInput(attrs={'class': 'form-control',
                                                              'placeholder': 'Last Name'}))
+
+    remarks = forms.CharField(max_length=2048,
+                              required=False,
+                              label='Remarks',
+                              widget=forms.Textarea(attrs={'class': 'form-control',
+                                                           'placeholder': 'Remarks'}))
 
     contact_number = forms.CharField(max_length=18,
                                      required=True,

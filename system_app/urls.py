@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from system_app.views import home, merchant, cube, item, payout, sales
+from system_app.views import home, merchant, cube, item, payout, sales, announcement
 
 home_url = [
     url(r'^login/$', home.user_login, name='login'),
@@ -12,6 +12,7 @@ merchant_url = [
     url(r'^merchant/all/$', merchant.all, name='merchant_all'),
     url(r'^merchant/add/$', merchant.add, name='merchant_add'),
     url(r'^merchant/password/$', merchant.change_password, name='change_password'),
+    url(r'^merchant/profile/(?P<profile_id>\w+)$', merchant.profile_edit, name='profile_edit'),
     url(r'^merchant/contact/(?P<contact_id>[0-9]+)$', merchant.contact_edit, name='contact_edit'),
     url(r'^merchant/store/(?P<store_id>[0-9]+)$', merchant.store_edit, name='store_edit'),
     url(r'^merchant/bank/(?P<bank_id>[0-9]+)$', merchant.bank_edit, name='bank_edit')
@@ -46,4 +47,12 @@ sales_url = [
     url(r'^sales/pay/(?P<payout_id>[0-9]+)$', sales.pay, name='sales_pay')
 ]
 
-urlpatterns = home_url + merchant_url + cube_url + item_url + payout_url + sales_url
+announcement_url = [
+    url(r'^announcement/(?P<announcement_id>[0-9]+)$', announcement.detail, name='announcement_detail'),
+    url(r'^announcement/all/$', announcement.all, name='announcement_all'),
+    url(r'^announcement/add/$', announcement.add, name='announcement_add'),
+    url(r'^announcement/edit/(?P<announcement_id>[0-9]+)$', announcement.edit, name='announcement_edit'),
+    url(r'^announcement/delete/(?P<announcement_id>[0-9]+)$', announcement.delete, name='announcement_delete')
+]
+
+urlpatterns = home_url + merchant_url + cube_url + item_url + payout_url + sales_url + announcement_url

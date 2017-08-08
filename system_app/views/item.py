@@ -67,10 +67,6 @@ def add(request, cube_id):
                 item.cube = cube
                 item.save()
 
-                code = '{0:05}-{1:05}'.format(cube.user.id, item.id)
-                item.code = code
-                item.save()
-
                 messages.success(request, 'Successfully added item.')
 
                 return redirect('/system/item/{0}'.format(item.id))

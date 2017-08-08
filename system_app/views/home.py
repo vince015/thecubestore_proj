@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
 
-from system_app.models import Item, Sales, Payout, Contact, Cube, Payout
+from system_app.models import Item, Sales, Payout, Contact, Cube, Payout, Profile
 
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
@@ -83,8 +83,11 @@ def dashboard(request):
             context_dict['merchants'] = list()
             cubes = Cube.objects.all().order_by('-next_due_date')
             for cube in cubes:
-                merchant = cube.user
-                contact = Contact.objects.filter(user=merchant).first()
+                merchant = cube.user.__dict__
+                profile = Profile.objects.filter(user=cube.user).first()
+                if profile:
+                    merchant.update(profile.__dict__)
+                contact = Contact.objects.filter(user=cube.user).first()
 
                 context_dict['merchants'].append({'profile': merchant,
                                                   'contact': contact,
@@ -97,7 +100,7 @@ def dashboard(request):
         raise
 
     except Exception as ex:
-        logout(request)
+        raise
         return server_error(request)
 
     return render(request, template, context_dict)

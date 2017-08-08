@@ -12,7 +12,8 @@ class CubeForm(forms.ModelForm):
                     'promo',
                     'start_date',
                     'end_date',
-                    'next_due_date'
+                    'next_due_date',
+                    'remarks'
                 ]
         widgets = {
                     'unit': forms.TextInput(attrs={'class': 'form-control',
@@ -32,5 +33,8 @@ class CubeForm(forms.ModelForm):
                                                        'placeholder': 'End date of lease'}),
                     'next_due_date': forms.DateInput(format='%m/%d/%Y',
                                                      attrs={'class': 'form-control datepicker',
-                                                            'placeholder': 'Next due date'})
+                                                            'placeholder': 'Next due date'}),
+                    'remarks': forms.Textarea(attrs={'class': 'form-control',
+                                                     'placeholder': 'Remarks'})
+
                 }

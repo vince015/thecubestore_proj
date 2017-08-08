@@ -7,10 +7,17 @@
 <div class="row">
     <div class="col-md-6">
         <h3>Announcement</h3>
-        <small class="text-muted">Date issued:</small>
-        <p>
-            No announcement
-        </p>
+        {% if announcement %}
+            <p><b>{{ announcement.subject }}</b></p>
+            <small class="text-muted">Date issued: {{ announcement.issue_date}}</small>
+            <p>
+                {{ announcement.detail }}
+            </p>
+        {% else %}
+            <p>
+                No announcement
+            </p>
+        {% endif %}
     </div>
     <div class="col-md-6">
         <div class="login-box">
@@ -70,8 +77,6 @@
                     </div>
                 </form>
                 <!-- end login form -->
-
-                <a href="#" class="text-center">Forget password</a>
             </div>
             <!-- end login-box-body -->
         </div>

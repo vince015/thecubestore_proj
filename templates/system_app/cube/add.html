@@ -162,6 +162,23 @@
                             <!-- widget -->
                             {{ form.next_due_date }}
                         </div>
+
+                        {% if form.remarks.errors %}
+                        <div class="form-group col-xs-6 has-error">
+                        {% else %}
+                        <div class="form-group col-xs-6">
+                        {% endif %}
+                            <label for="{{ form.remarks.id_for_label }}">
+                                Remarks
+                                <ul>
+                                {% for error in form.remarks.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </label>
+                            <!-- widget -->
+                            {{ form.remarks }}
+                        </div>
                     </div>
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Submit</button>

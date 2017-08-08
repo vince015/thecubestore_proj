@@ -21,7 +21,7 @@
         <div class="box box-primary">
             <div class="box-body box-profile">
                 <h3 class="profile-username text-center">{{ profile.first_name }} {{ profile.last_name }}</h3>
-                <p class="text-muted text-center">Merchant ID: {{ profile.id|stringformat:"05d" }}</p>
+                <p class="text-muted text-center">Merchant ID: {{ profile.merchant_id }}</p>
 
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
@@ -54,6 +54,11 @@
                             </a>
                         </li>
                     {% endif %}
+                    <li class="list-group-item" style="overflow:hidden;">
+                        <a href="{% url 'profile_edit' profile_id=profile.merchant_id %}" class="pull-right">
+                            <i class="fa fa-gear margin-r-5"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -211,7 +216,7 @@
                         <div class="small-box bg-blue">
                             <div class="inner">
                                 <h3>{{ unpaid }}<sup style="font-size: 20px">Php</sup></h3>
-                                <p>Sales</p>
+                                <p>Unpaid Sales</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-cash"></i>

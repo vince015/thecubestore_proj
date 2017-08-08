@@ -112,15 +112,15 @@
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-gear"></i>
-                                <span>Account</span>
+                                <i class="fa fa-bell-o"></i>
+                                <span>Announcements</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{% url 'change_password' %}"><i class="fa fa-circle-o"></i>Change Password</a></li>
-                                <li><a href="{% url 'logout' %}"><i class="fa fa-circle-o"></i>Logout</a></li>
+                                <li><a href="{% url 'announcement_all' %}"><i class="fa fa-circle-o"></i>All</a></li>
+                                <li><a href="{% url 'announcement_add' %}"><i class="fa fa-circle-o"></i>Add</a></li>
                             </ul>
                         </li>
                     </ul>

@@ -10,8 +10,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
 
 
-from system_app.forms.merchant import MerchantForm, ContactForm, StoreForm, BankForm
-from system_app.models import Contact, Store, Bank, Cube, Payout, Sales
+from system_app.forms.merchant import MerchantForm, ContactForm, StoreForm, BankForm, ProfileForm
+from system_app.models import Contact, Store, Bank, Cube, Payout, Sales, Profile
 
 @login_required
 def detail(request, user_id):
@@ -21,7 +21,11 @@ def detail(request, user_id):
         context_dict = dict()
 
         user = User.objects.get(id=user_id)
-        context_dict['profile'] = user
+        context_dict['profile'] = user.__dict__
+
+        profile = Profile.objects.filter(user=user).first()
+        if profile:
+            context_dict['profile'].update(profile.__dict__)
 
         contact = Contact.objects.filter(user=user).first()
         if contact:
@@ -110,6 +114,10 @@ def add(request):
                     group = Group.objects.get(name='Merchant')
                     group.user_set.add(user)
 
+                    Profile.objects.create(user=user,
+                                           merchant_id=form.cleaned_data.get('merchant_id'),
+                                           remarks=form.cleaned_data.get('remarks'))
+
                     Contact.objects.create(user=user,
                                            contact_number=form.cleaned_data.get('contact_number'),
                                            primary_address=form.cleaned_data.get('primary_address'),
@@ -161,6 +169,39 @@ def change_password(request):
         else:
             form = PasswordChangeForm(request.user)
             context_dict['form'] = form
+
+    except:
+        raise
+        return server_error(request)
+
+    return render(request, template, context_dict)
+
+@login_required
+def profile_edit(request, profile_id):
+
+    try:
+        template = 'system_app/merchant/profile_edit.html'
+        context_dict = dict()
+
+        instance = Profile.objects.get(pk=profile_id)
+
+        if request.method == "POST":
+            form = ProfileForm(request.POST, instance=instance)
+            context_dict['form'] = form
+
+            if form.is_valid():
+                profile = form.save(commit=False)
+                profile.save()
+
+                messages.success(request, 'Successfully edited profile.')
+
+                return redirect('/system/merchant/{0}'.format(profile.user.id))
+        else:
+            form = ProfileForm(instance=instance)
+            context_dict['form'] = form
+
+    except ObjectDoesNotExist:
+        raise Http404
 
     except:
         raise

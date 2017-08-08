@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
 
-from system_app.models import Contact, Store, Bank
+from system_app.models import Contact, Store, Bank, Announcement, Profile
 from system_app.models import Cube, Payout, Item, Sales
 
 
@@ -31,6 +31,9 @@ def user_login(request):
 
         context_dict = dict()
         context_dict['redirect_to'] = next
+
+        announcement = Announcement.objects.all().order_by('-issue_date')
+        context_dict['announcement'] = announcement[0]
 
         if request.method == "POST":
             username = request.POST['username']

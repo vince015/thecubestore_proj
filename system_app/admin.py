@@ -1,10 +1,23 @@
 from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
-from system_app.models import Contact, Store, Bank, Cube, Item, Payout, Sales
+from system_app.models import Contact, Store, Bank, Cube, Item, Payout, Sales, Announcement, Profile
 from django.core import urlresolvers
 
 from import_export import resources
 
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('merchant_id', 'merchant')
+    list_display_links = ['merchant_id']
+    search_fields = ['merchant_id']
+    list_per_page = 50
+
+    def merchant(self, obj):
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
+        return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
+    merchant.allow_tags = True
+
+admin.site.register(Profile, ProfileAdmin)
 
 class ContactResource(resources.ModelResource):
 
@@ -20,7 +33,7 @@ class ContactAdmin(ImportExportModelAdmin):
     resource_class = ContactResource
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
         return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
     merchant.allow_tags = True
 
@@ -33,7 +46,7 @@ class StoreAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
         return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
     merchant.allow_tags = True
 
@@ -46,7 +59,7 @@ class BankAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
         return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
     merchant.allow_tags = True
 
@@ -59,7 +72,7 @@ class CubeAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
         return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
     merchant.allow_tags = True
 
@@ -72,7 +85,7 @@ class ItemAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def containing_cube(self, obj):
-        link = urlresolvers.reverse("admin:system_app_cube_change", args=[obj.cube.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:system_app_cube_change", args=[obj.cube.id])
         return '<a href="{0}">{1}</a>'.format(link, obj.cube.unit)
     containing_cube.allow_tags = True
 
@@ -92,12 +105,12 @@ class PayoutAdmin(ImportExportModelAdmin):
     resource_class = PayoutResource
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
         return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
     merchant.allow_tags = True
 
     def bank_account(self, obj):
-        link = urlresolvers.reverse("admin:system_app_bank_change", args=[obj.bank.id]) #model name has to be lowercase
+        link = urlresolvers.reverse("admin:system_app_bank_change", args=[obj.bank.id])
         return '<a href="{0}">{1} ({2})</a>'.format(link, obj.bank.bank, obj.bank.account)
     bank_account.allow_tags = True
 
@@ -116,3 +129,12 @@ class SalesAdmin(ImportExportModelAdmin):
     resource_class = SalesResource
 
 admin.site.register(Sales, SalesAdmin)
+
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('id', 'issue_date', 'subject')
+    list_display_links = ['id']
+    search_fields = ['id', 'issue_date', 'subject']
+    list_per_page = 50
+
+
+admin.site.register(Announcement, AnnouncementAdmin)
