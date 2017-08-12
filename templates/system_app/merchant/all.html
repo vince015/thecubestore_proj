@@ -37,7 +37,7 @@
                         {% for merchant in merchants %}
                             <tr>
                                 <td>
-                                    {{ merchant.profile.id|stringformat:"05d" }}
+                                    {{ merchant.profile.merchant_id }}
                                 </td>
                                 <td>
                                     <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">

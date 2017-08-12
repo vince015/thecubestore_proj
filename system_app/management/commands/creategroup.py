@@ -7,8 +7,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if not Group.objects.filter(name='Staff').exists():
-            group = Group.objects.create(name='Staff')
+        if not Group.objects.filter(name='Crew').exists():
+            group = Group.objects.create(name='Crew')
 
         if not Group.objects.filter(name='Merchant').exists():
             Group.objects.create(name='Merchant')

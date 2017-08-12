@@ -64,7 +64,7 @@ def dashboard(request):
         context_dict['user'] = user
 
         # Get user info
-        if is_member(user, 'Staff'):
+        if is_member(user, 'Crew'):
             items = Item.objects.all()
             context_dict['items'] = items
 

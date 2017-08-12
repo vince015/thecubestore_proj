@@ -11,7 +11,7 @@ from django.views.defaults import server_error
 
 
 from system_app.forms.payout import PayoutForm
-from system_app.models import Payout, Sales, Bank
+from system_app.models import Payout, Sales, Bank, Profile
 
 def convert_date(str_time):
 
@@ -79,6 +79,10 @@ def add(request, user_id):
         user = User.objects.get(id=user_id)
         context_dict['merchant'] = user
 
+        profile = Profile.objects.get(user=user)
+        sales = Sales.objects.filter(item__startswith=profile.merchant_id).filter(payout=None).order_by('-date')
+        context_dict['sales'] = sales
+
         if request.method == "POST":
             form = PayoutForm(request.POST)
             context_dict['form'] = form
@@ -92,6 +96,12 @@ def add(request, user_id):
                     payout.bank = bank
 
                 payout.save()
+
+                selected_sales = request.POST.getlist('sales')
+                for sale_id in selected_sales:
+                    selected_sale = Sales.objects.get(id=int(sale_id))
+                    selected_sale.payout = payout.id
+                    selected_sale.save()
 
                 messages.success(request, 'Successfully added payout.')
 

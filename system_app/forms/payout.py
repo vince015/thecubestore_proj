@@ -17,9 +17,10 @@ class PayoutForm(forms.ModelForm):
                     'date': forms.DateInput(format='%m/%d/%Y',
                                             attrs={'class': 'form-control datepicker',
                                                    'placeholder': 'Date of payout'}),
-                    'amount': forms.NumberInput(attrs={'step': 0.25,
+                    'amount': forms.NumberInput(attrs={'step': 0.01,
+                                                       'value': 0.00,
                                                        'class': 'form-control',
                                                        'placeholder': 'Amount deposited'}),
-                    'remarks': forms.Textarea(attrs={'class': 'form-control',
-                                                     'placeholder': 'Remarks'})
+                    'remarks': forms.TextInput(attrs={'class': 'form-control',
+                                                      'placeholder': 'Remarks'})
                 }

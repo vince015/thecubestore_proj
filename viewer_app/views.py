@@ -33,7 +33,8 @@ def user_login(request):
         context_dict['redirect_to'] = next
 
         announcement = Announcement.objects.all().order_by('-issue_date')
-        context_dict['announcement'] = announcement[0]
+        if announcement:
+            context_dict['announcement'] = announcement[0]
 
         if request.method == "POST":
             username = request.POST['username']
@@ -52,6 +53,7 @@ def user_login(request):
                 return render(request, template, context_dict)
 
     except:
+        raise
         return server_error(request)
 
     return render(request, template, context_dict)
@@ -97,10 +99,24 @@ def profile(request):
         template = 'viewer_app/profile.html'
 
         user = User.objects.get(username=request.user.username)
-        context_dict['profile'] = user
+        context_dict['profile'] = user.__dict__
 
         # Get user info
         if is_member(user, 'Merchant'):
+            profile = Profile.objects.filter(user=user).first()
+            if profile:
+                context_dict['profile'].update(profile.__dict__)
+
+                sales = Sales.objects.filter(item__startswith=profile.merchant_id).order_by('-date')
+                context_dict['sales'] = sales
+
+                # Get Sales
+                unpaid = 0
+                for sale in sales:
+                    if not sale.payout:
+                        unpaid = unpaid + sale.net
+                context_dict['unpaid'] = unpaid
+
             contact = Contact.objects.filter(user=user).first()
             if contact:
                 context_dict['contact'] = contact
@@ -116,16 +132,12 @@ def profile(request):
             cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
             context_dict['cubes'] = cubes
 
-            merchant_item_code = '{0:05}'.format(user.id)
-            sales = Sales.objects.filter(item__startswith=merchant_item_code).order_by('-date')
-            context_dict['sales'] = sales
-
-            # Get Sales
-            unpaid = 0
-            for sale in sales:
-                if not sale.payout:
-                    unpaid = unpaid + sale.net
-            context_dict['unpaid'] = unpaid
+            # Get inventory from cube
+            context_dict['items'] = list()
+            for cube in cubes:
+                items = Item.objects.filter(cube=cube)
+                for item in items:
+                    context_dict['items'].append(item)
 
             payouts = Payout.objects.filter(merchant=user).order_by('-date')
             context_dict['payouts'] = payouts

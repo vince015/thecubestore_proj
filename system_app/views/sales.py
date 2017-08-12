@@ -37,7 +37,7 @@ def add(request):
 
         if request.method == "POST":
             item = Item.objects.get(id=request.POST.get('item'))
-            
+
             quantity = int(request.POST.get('quantity'))
             gross = item.price*quantity
             net = compute_net(gross, item.vat, item.commission)
@@ -75,7 +75,6 @@ def pay(request, payout_id):
         if request.method == "POST":
             selected_sales = request.POST.getlist('sales')
             for sale_id in selected_sales:
-                print(sale_id)
                 selected_sale = Sales.objects.get(id=int(sale_id))
                 selected_sale.payout = payout.id
                 selected_sale.save()

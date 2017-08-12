@@ -47,18 +47,13 @@
                         </li>
                     {% endif %}
                     {% if store.website %}
-                        <li class="list-group-item" style="overflow:hidden;">
+                        <li class="list-group-item">
                             <b>Website</i></b>
                             <a href="{{ store.website }}" class="pull-right">
                                 {{ store.website }}
                             </a>
                         </li>
                     {% endif %}
-                    <li class="list-group-item" style="overflow:hidden;">
-                        <a href="{% url 'profile_edit' profile_id=profile.merchant_id %}" class="pull-right">
-                            <i class="fa fa-gear margin-r-5"></i>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -66,9 +61,11 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Contact Info</h3>
-                <a href="{% url 'contact_edit' contact_id=contact.id %}" class="pull-right">
-                    <i class="fa fa-pencil"></i>
-                </a>
+                <div class="tools">
+                    <a href="{% url 'contact_edit' contact_id=contact.id %}" class="pull-right">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </div>
             </div>
             <div class="box-body">
                 <strong><i class="fa fa-mobile margin-r-5"></i> Contact Number</strong>
@@ -131,6 +128,7 @@
                 <li class="active"><a href="#cube" data-toggle="tab">Cubes</a></li>
                 <li><a href="#payout" data-toggle="tab">Payouts</a></li>
                 <li><a href="#sales" data-toggle="tab">Sales</a></li>
+                <li><a href="#settings" data-toggle="tab">Settings</a></li>
             </ul>
             <div class="tab-content">
                 <div id="cube" class="active tab-pane">
@@ -141,9 +139,11 @@
                                 <th>Next Due Date</th>
                                 <th>Monthly Rate</th>
                                 <th>
-                                    <a href="{% url 'cube_add' user_id=profile.id %}" class="pull-right">
-                                        [Add]
-                                    </a>
+                                    <button type="button" class="btn btn-default pull-right">
+                                        <a href="{% url 'cube_add' user_id=profile.id %}" class="pull-right">
+                                            <i class="fa fa-plus"></i> Add
+                                        </a>
+                                    </button>
                                 </th>
                             </tr>
                         </thead>
@@ -267,6 +267,51 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="tab-pane" id="settings">
+                    <form action="{% url 'profile_edit' profile_id=form.instance.merchant_id %}" method="post">
+                    {% csrf_token %}
+                        <div class="box-body">
+                            {% if form.merchant_id.errors %}
+                            <div class="form-group has-error">
+                            {% else %}
+                            <div class="form-group">
+                            {% endif %}
+                                <label for="{{ form.merchant_id.id_for_label }}">
+                                    Merchant ID
+                                    <ul>
+                                    {% for error in form.merchant_id.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </label>
+                                <!-- widget -->
+                                {{ form.merchant_id }}
+                            </div>
+
+                            {% if form.remarks.errors %}
+                            <div class="form-group has-error">
+                            {% else %}
+                            <div class="form-group">
+                            {% endif %}
+                                <label for="{{ form.remarks.id_for_label }}">
+                                    Remarks
+                                    <ul>
+                                    {% for error in form.remarks.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </label>
+                                <!-- widget -->
+                                {{ form.remarks }}
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <a href="">Delete</a>
+                            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -281,25 +326,33 @@
         $('#cube_table').DataTable({
             'paging'      : true,
             'lengthChange': false,
-            'searching'   : false,
+            'searching'   : true,
             'ordering'    : true,
             'info'        : true,
             'autoWidth'   : false,
-            'order'       : [[1, 'desc']]
+            'order'       : [[1, 'desc']],
+            'aoColumnDefs' : [{
+                               'bSortable' : false,
+                               'aTargets' : [ -1 ]
+                             }]
         });
         $('#payout_table').DataTable({
             'paging'      : true,
             'lengthChange': false,
-            'searching'   : false,
+            'searching'   : true,
             'ordering'    : true,
             'info'        : true,
             'autoWidth'   : false,
-            'order'       : [[1, 'desc']]
+            'order'       : [[1, 'desc']],
+            'aoColumnDefs' : [{
+                               'bSortable' : false,
+                               'aTargets' : [ -1 ]
+                             }]
         });
         $('#sales_table').DataTable({
             'paging'      : true,
             'lengthChange': false,
-            'searching'   : false,
+            'searching'   : true,
             'ordering'    : true,
             'info'        : true,
             'autoWidth'   : false,

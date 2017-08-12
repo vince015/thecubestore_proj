@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.forms.models import model_to_dict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
@@ -26,6 +27,11 @@ def detail(request, user_id):
         profile = Profile.objects.filter(user=user).first()
         if profile:
             context_dict['profile'].update(profile.__dict__)
+            form = ProfileForm(instance=profile)
+            context_dict['form'] = form
+
+            sales = Sales.objects.filter(item__startswith=profile.merchant_id).order_by('-date')
+            context_dict['sales'] = sales
 
         contact = Contact.objects.filter(user=user).first()
         if contact:
@@ -44,10 +50,6 @@ def detail(request, user_id):
 
         payouts = Payout.objects.filter(merchant=user).order_by('-date')
         context_dict['payouts'] = payouts
-
-        merchant_item_code = '{0:05}'.format(user.id)
-        sales = Sales.objects.filter(item__startswith=merchant_item_code).order_by('-date')
-        context_dict['sales'] = sales
 
         # Get Sales
         unpaid = 0
@@ -76,8 +78,12 @@ def all(request):
         users = User.objects.filter(groups__name='Merchant')
         for user in users:
             cubes = Cube.objects.filter(user=user)
+            profile = Profile.objects.get(user=user)
 
-            context_dict['merchants'].append({'profile': user,
+            profile_dict = model_to_dict(profile)
+            profile_dict.update(model_to_dict(user))
+
+            context_dict['merchants'].append({'profile': profile_dict,
                                               'cubes': cubes})
 
     except ObjectDoesNotExist:

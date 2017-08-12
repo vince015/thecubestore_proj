@@ -148,7 +148,8 @@ class Payout(models.Model):
                                  decimal_places=2,
                                  null=True)
     remarks = models.CharField(max_length=256,
-                               null=True)
+                               null=True,
+                               blank=True)
 
 class Sales(models.Model):
 

@@ -1,5 +1,6 @@
 {% extends "system_app/base.html" %}
 
+{% load mathfilters %}
 {% load staticfiles %}
 {% block pagetitle %}Payouts{% endblock %}
 
@@ -90,6 +91,49 @@
                             {{ form.amount }}
                         </div>
 
+                        <label>Items</label>
+                        <table id="sales_table" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Code</th>
+                                    <th>Date</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Gross</th>
+                                    <th>Net</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in sales %}
+                                    <tr>
+                                        <td>
+                                          <input type="checkbox" name="sales" value="{{ sale.id }}">
+                                        </td>
+                                        <td>
+                                            {{ sale.item }}
+                                        </td>
+                                        <td>
+                                            {{ sale.date }}
+                                        </td>
+                                        <td>
+                                            {{ sale.quantity }}
+                                        </td>
+                                        <td>
+                                            {{ sale.gross|div:sale.quantity }}
+                                        </td>
+                                        <td>
+                                            {{ sale.gross }}
+                                        </td>
+                                        <td>
+                                            {{ sale.net }}
+                                        </td>
+                                    </tr>
+                                {% endfor%}
+                            </tbody>
+                        </table>
+                        <hr>
+
                         <div class="box-body">
                         {% if form.remarks.errors %}
                         <div class="form-group has-error">
@@ -122,6 +166,19 @@
     $(document).ready(function() {
         $('.datepicker').datepicker({
             autoclose: true,
+        });
+
+        $(':checkbox').change(function() {
+            var amount = parseFloat($('#id_amount').val());
+            var gross = parseFloat($(this).parent().siblings(':last').text());
+            if(this.checked)
+            {
+                $('#id_amount').val(amount + gross)
+            }
+            else
+            {
+                $('#id_amount').val(amount - gross)
+            }
         });
     });
 </script>

@@ -185,8 +185,8 @@
                         <table id="payout_table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Payout ID</th>
-                                    <th>Merchant ID</th>
+                                    <th>Reference No.</th>
+                                    <th>Merchant</th>
                                     <th>Date</th>
                                     <th>Bank</th>
                                     <th>Amount</th>
@@ -197,17 +197,19 @@
                                     <tr>
                                         <td>
                                             <a href="{% url 'payout_detail' payout_id=payout.id %}">
-                                                {{ payout.id }}
+                                                {{ payout.reference_number }}
                                             </a>
                                         </td>
                                         <td>
-                                            {{ payout.merchant.id|stringformat:"05d" }}
+                                            <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
+                                                {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
+                                            </a>
                                         </td>
                                         <td>
                                             {{ payout.date|date:'Y-m-d' }}
                                         </td>
                                         <td>
-                                            {{ payout.bank.bank }} - {{ payout.bank.account }}
+                                            ({{ payout.bank.bank }}) {{ payout.bank.account }}
                                         </td>
                                         <td>
                                             {{ payout.amount }}
@@ -233,9 +235,12 @@
             'paging'      : true,
             'lengthChange': false,
             'searching'   : true,
-            'ordering'    : true,
             'info'        : true,
-            'autoWidth'   : false
+            'autoWidth'   : false,
+            'aoColumnDefs' : [{
+                               'bSortable' : false,
+                               'aTargets' : [ -1 ]
+                             }]
         });
 
         $('#sales_table').DataTable({
@@ -266,7 +271,7 @@
             'info'        : true,
             'autoWidth'   : false,
             'order'       : [[2, 'desc']]
-        })
+        });
     })
 </script>
 {% endblock %}
