@@ -15,7 +15,8 @@ merchant_url = [
     url(r'^merchant/profile/(?P<profile_id>\w+)$', merchant.profile_edit, name='profile_edit'),
     url(r'^merchant/contact/(?P<contact_id>[0-9]+)$', merchant.contact_edit, name='contact_edit'),
     url(r'^merchant/store/(?P<store_id>[0-9]+)$', merchant.store_edit, name='store_edit'),
-    url(r'^merchant/bank/(?P<bank_id>[0-9]+)$', merchant.bank_edit, name='bank_edit')
+    url(r'^merchant/bank/(?P<bank_id>[0-9]+)$', merchant.bank_edit, name='bank_edit'),
+    url(r'^merchant/delete/(?P<user_id>[0-9]+)$', merchant.delete, name='merchant_delete')
 ]
 
 cube_url = [

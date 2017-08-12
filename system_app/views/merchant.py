@@ -314,3 +314,23 @@ def bank_edit(request, bank_id):
 
     return render(request, template, context_dict)
 
+@login_required
+def delete(request, user_id):
+
+    try:
+        user = User.objects.get(id=user_id)
+
+        if request.method == "POST":
+            user.delete()
+
+            messages.success(request, 'Successfully deleted merchant.')
+
+            return redirect('/system/merchant/all')
+
+    except ObjectDoesNotExist:
+        raise Http404()
+
+    except:
+        return server_error(request)
+
+    return render(request, template, context_dict)

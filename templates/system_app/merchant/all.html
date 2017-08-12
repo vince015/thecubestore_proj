@@ -20,9 +20,11 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Registered merchants: {{ merchants|length }} </h3>
-                <a href="{% url 'merchant_add' %}" class="pull-right">
-                    [Add]
-                </a>
+                <button type="button" class="btn btn-default pull-right">
+                    <a href="{% url 'merchant_add' %}" class="pull-right">
+                        <i class="fa fa-plus"></i> Add
+                    </a>
+                </button>
             </div>
             <div class="box-body">
                 <table id="merchant_table" class="table table-bordered table-striped">
