@@ -25,6 +25,7 @@
                         <b>Payout ID</b>
                         <span class="pull-right text-muted">{{ payout.id }}</span>
                     </li>
+                    {% if payout.merchant %}
                     <li class="list-group-item">
                         <b>Merchant ID</b>
                         <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
@@ -42,6 +43,7 @@
                             </b>
                         </a>
                     </li>
+                    {% endif %}
                     <li class="list-group-item">
                         <b>Reference Number</b>
                         <span class="pull-right text-muted">{{ payout.reference_number }}</span>

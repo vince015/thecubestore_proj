@@ -201,15 +201,23 @@
                                             </a>
                                         </td>
                                         <td>
+                                            {% if payout.merchant %}
                                             <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
                                                 {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
                                             </a>
+                                            {% else %}
+                                                <em>None</em>
+                                            {% endif %}
                                         </td>
                                         <td>
                                             {{ payout.date|date:'Y-m-d' }}
                                         </td>
                                         <td>
-                                            ({{ payout.bank.bank }}) {{ payout.bank.account }}
+                                            {% if payout.bank %}
+                                                ({{ payout.bank.bank }}) {{ payout.bank.account }}
+                                            {% else %}
+                                                <em>None</em>
+                                            {% endif %}
                                         </td>
                                         <td>
                                             {{ payout.amount }}

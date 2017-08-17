@@ -14,6 +14,8 @@ from system_app.models import Item, Sales, Payout, Contact, Cube, Payout, Profil
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
 
+import json
+
 def is_member(user, group):
     return user.groups.filter(name=group).exists()
 
@@ -22,10 +24,13 @@ def user_login(request):
     try:
         # Redirection
         template = 'system_app/login.html'
-        next = request.GET.get('next', '/system/dashboard')
+
+        redirect = request.GET.get('next', '/system/dashboard')
+        if not redirect.startswith('/system'):
+            raise Http404
 
         context_dict = dict()
-        context_dict['redirect_to'] = next
+        context_dict['redirect_to'] = redirect
 
         if request.method == "POST":
             username = request.POST['username']
@@ -35,7 +40,7 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(next)
+                    return HttpResponseRedirect(redirect)
                 else:
                     messages.error(request, INACTIVE_USER)
                     return render(request, template)
@@ -89,9 +94,12 @@ def dashboard(request):
                     merchant.update(profile.__dict__)
                 contact = Contact.objects.filter(user=cube.user).first()
 
-                context_dict['merchants'].append({'profile': merchant,
-                                                  'contact': contact,
-                                                  'cube': cube})
+                merchant_info = {'profile': merchant,
+                                 'contact': contact,
+                                 'cube': cube}
+
+                context_dict['merchants'].append(merchant_info)
+
         else:
             raise PermissionDenied
 
