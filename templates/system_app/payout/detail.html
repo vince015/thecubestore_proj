@@ -27,14 +27,6 @@
                     </li>
                     {% if payout.merchant %}
                     <li class="list-group-item">
-                        <b>Merchant ID</b>
-                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
-                            <b>
-                            {{ payout.merchant.id|stringformat:"05d" }}
-                            </b>
-                        </a>
-                    </li>
-                    <li class="list-group-item">
                         <b>Merchant Name</b>
                         <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
                             <b>
@@ -56,6 +48,7 @@
                         <b>Amount</b>
                         <span class="pull-right text-muted">{{ payout.amount }}</span>
                     </li>
+                    {% if payout.bank %}
                     <li class="list-group-item">
                         <b>Bank Account</b>
                         <span class="pull-right text-muted">
@@ -66,6 +59,7 @@
                         <b>Bank Account Owner</b>
                         <span class="pull-right text-muted">{{ payout.bank.owner }}</span>
                     </li>
+                    {% endif %}
                     <li class="list-group-item">
                         <b>Remarks</b>
                         <span class="pull-right text-muted">{{ payout.remarks }}</span>

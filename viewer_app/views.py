@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -14,10 +14,12 @@ from django.core.exceptions import PermissionDenied
 
 from system_app.models import Contact, Store, Bank, Announcement, Profile
 from system_app.models import Cube, Payout, Item, Sales
+from util.util import VIEWER_APP_LOGIN, is_merchant
 
 
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
+NOT_MERCHANT = "You are authenticated as {0}, but are not authorized to access this page. Would you like to login to a different account?"
 
 def is_member(user, group):
     return user.groups.filter(name=group).exists()
@@ -27,10 +29,15 @@ def user_login(request):
     try:
         # Redirection
         template = 'viewer_app/login.html'
-        next = request.GET.get('next', '/thecubestore')
+        redirect = request.GET.get('next', '/thecubestore')
+        if not redirect.startswith('/thecubestore'):
+            raise Http404
 
         context_dict = dict()
-        context_dict['redirect_to'] = next
+        context_dict['redirect_to'] = redirect
+
+        if not request.user.is_anonymous() and not is_member(request.user, 'Merchant'):
+            messages.error(request, NOT_MERCHANT.format(request.user))
 
         announcement = Announcement.objects.all().order_by('-issue_date')
         if announcement:
@@ -44,7 +51,7 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(next)
+                    return HttpResponseRedirect(redirect)
                 else:
                     messages.error(request, INACTIVE_USER)
                     return render(request, template)
@@ -53,17 +60,19 @@ def user_login(request):
                 return render(request, template, context_dict)
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
+@login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def user_logout(request):
 
     logout(request)
-    return HttpResponseRedirect('/thecubestore/login')
+    return HttpResponseRedirect(VIEWER_APP_LOGIN)
 
 @login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def change_password(request):
 
     try:
@@ -85,13 +94,13 @@ def change_password(request):
             context_dict['form'] = form
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
 
 @login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def profile(request):
 
     try:
@@ -101,65 +110,57 @@ def profile(request):
         user = User.objects.get(username=request.user.username)
         context_dict['profile'] = user.__dict__
 
-        # Get user info
-        if is_member(user, 'Merchant'):
-            profile = Profile.objects.filter(user=user).first()
-            if profile:
-                context_dict['profile'].update(profile.__dict__)
+        profile = Profile.objects.filter(user=user).first()
+        if profile:
+            context_dict['profile'].update(profile.__dict__)
 
-                sales = Sales.objects.filter(item__startswith=profile.merchant_id).order_by('-date')
-                context_dict['sales'] = sales
+            sales = Sales.objects.filter(item__startswith=profile.merchant_id).order_by('-date')
+            context_dict['sales'] = sales
 
-                # Get Sales
-                unpaid = 0
-                for sale in sales:
-                    if not sale.payout:
-                        unpaid = unpaid + sale.net
-                context_dict['unpaid'] = unpaid
+            # Get Sales
+            unpaid = 0
+            for sale in sales:
+                if not sale.payout:
+                    unpaid = unpaid + sale.net
+            context_dict['unpaid'] = unpaid
 
-            contact = Contact.objects.filter(user=user).first()
-            if contact:
-                context_dict['contact'] = contact
+        contact = Contact.objects.filter(user=user).first()
+        if contact:
+            context_dict['contact'] = contact
 
-            store = Store.objects.filter(user=user).first()
-            if store:
-                context_dict['store'] = store
+        store = Store.objects.filter(user=user).first()
+        if store:
+            context_dict['store'] = store
 
-            bank = Bank.objects.filter(user=user).first()
-            if bank:
-                context_dict['bank']  = bank
+        bank = Bank.objects.filter(user=user).first()
+        if bank:
+            context_dict['bank']  = bank
 
-            cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
-            context_dict['cubes'] = cubes
+        cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
+        context_dict['cubes'] = cubes
 
-            # Get inventory from cube
-            context_dict['items'] = list()
-            for cube in cubes:
-                items = Item.objects.filter(cube=cube)
-                for item in items:
-                    context_dict['items'].append(item)
+        # Get inventory from cube
+        context_dict['items'] = list()
+        for cube in cubes:
+            items = Item.objects.filter(cube=cube)
+            for item in items:
+                context_dict['items'].append(item)
 
-            payouts = Payout.objects.filter(merchant=user).order_by('-date')
-            context_dict['payouts'] = payouts
+        payouts = Payout.objects.filter(merchant=user).order_by('-date')
+        context_dict['payouts'] = payouts
 
-            earnings = 0
-            for payout in payouts:
-                earnings = earnings + payout.amount
-            context_dict['earnings'] = earnings
-        else:
-            raise PermissionDenied
-
-    except PermissionDenied:
-        logout(request)
-        raise
+        earnings = 0
+        for payout in payouts:
+            earnings = earnings + payout.amount
+        context_dict['earnings'] = earnings
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def cube(request, cube_id):
 
     try:
@@ -176,12 +177,12 @@ def cube(request, cube_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def item(request, item_id):
 
     try:
@@ -200,6 +201,7 @@ def item(request, item_id):
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_merchant, login_url=VIEWER_APP_LOGIN)
 def payout(request, payout_id):
 
     try:
@@ -221,7 +223,6 @@ def payout(request, payout_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)

@@ -218,9 +218,9 @@
                                         </td>
                                         <td>
                                             {% if payout.merchant %}
-                                            <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
-                                                {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
-                                            </a>
+                                                <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
+                                                    {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
+                                                </a>
                                             {% else %}
                                                 <em>None</em>
                                             {% endif %}

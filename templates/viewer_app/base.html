@@ -56,21 +56,6 @@
                     </section>
 
                     <section class="content">
-
-                        {% if messages %}
-                        <div class="callout callout-success">
-                            <ul>
-                            {% for message in messages %}
-                                {% if message.tags %}
-                                    {% if message.tags == 'success' %}
-                                        <li>{{ message }}</li>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                            </ul>
-                        </div>
-                        {% endif %}
-
                         {% block callouts %}{% endblock %}
 
                         {% block main %}{% endblock %}

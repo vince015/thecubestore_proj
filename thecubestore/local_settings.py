@@ -26,13 +26,12 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = '9p5_b!0p$29m^29izg0c^8di*&a*2!q=mq6bs@82b-37!$+2(9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '.elasticbeanstalk.com'
 ]
-ADMIN =
 
 
 # Application definition

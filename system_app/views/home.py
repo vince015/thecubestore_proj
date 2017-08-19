@@ -3,18 +3,18 @@ from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
 
 from system_app.models import Item, Sales, Payout, Contact, Cube, Payout, Profile
+from util.util import SYSTEM_APP_LOGIN, is_crew
 
 INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
-
-import json
+NOT_CREW = "You are authenticated as {0}, but are not authorized to access this page. Would you like to login to a different account?"
 
 def is_member(user, group):
     return user.groups.filter(name=group).exists()
@@ -31,6 +31,9 @@ def user_login(request):
 
         context_dict = dict()
         context_dict['redirect_to'] = redirect
+
+        if not request.user.is_anonymous() and not is_member(request.user, 'Crew'):
+            messages.error(request, NOT_CREW.format(request.user))
 
         if request.method == "POST":
             username = request.POST['username']
@@ -49,16 +52,20 @@ def user_login(request):
                 return render(request, template, context_dict)
 
     except:
+        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
+@login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def user_logout(request):
 
     logout(request)
-    return HttpResponseRedirect('/system/login/')
+    return HttpResponseRedirect(SYSTEM_APP_LOGIN)
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def dashboard(request):
 
     try:
@@ -68,44 +75,35 @@ def dashboard(request):
         user = User.objects.get(username=request.user.username)
         context_dict['user'] = user
 
-        # Get user info
-        if is_member(user, 'Crew'):
-            items = Item.objects.all()
-            context_dict['items'] = items
+        items = Item.objects.all()
+        context_dict['items'] = items
 
-            sales = Sales.objects.all().order_by('-date')
-            context_dict['sales'] = sales
+        sales = Sales.objects.all().order_by('-date')
+        context_dict['sales'] = sales
 
-            unpaid = 0
-            for sale in sales:
-                if not sale.payout:
-                    unpaid = unpaid + sale.net
-            context_dict['unpaid'] = unpaid
+        unpaid = 0
+        for sale in sales:
+            if not sale.payout:
+                unpaid = unpaid + sale.net
+        context_dict['unpaid'] = unpaid
 
-            payouts = Payout.objects.all().order_by('-date')
-            context_dict['payouts'] = payouts
+        payouts = Payout.objects.all().order_by('-date')
+        context_dict['payouts'] = payouts
 
-            context_dict['merchants'] = list()
-            cubes = Cube.objects.all().order_by('-next_due_date')
-            for cube in cubes:
-                merchant = cube.user.__dict__
-                profile = Profile.objects.filter(user=cube.user).first()
-                if profile:
-                    merchant.update(profile.__dict__)
-                contact = Contact.objects.filter(user=cube.user).first()
+        context_dict['merchants'] = list()
+        cubes = Cube.objects.all().order_by('-next_due_date')
+        for cube in cubes:
+            merchant = cube.user.__dict__
+            profile = Profile.objects.filter(user=cube.user).first()
+            if profile:
+                merchant.update(profile.__dict__)
+            contact = Contact.objects.filter(user=cube.user).first()
 
-                merchant_info = {'profile': merchant,
-                                 'contact': contact,
-                                 'cube': cube}
+            merchant_info = {'profile': merchant,
+                             'contact': contact,
+                             'cube': cube}
 
-                context_dict['merchants'].append(merchant_info)
-
-        else:
-            raise PermissionDenied
-
-    except PermissionDenied:
-        logout(request)
-        raise
+            context_dict['merchants'].append(merchant_info)
 
     except Exception as ex:
         raise

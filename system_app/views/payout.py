@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -12,6 +12,7 @@ from django.views.defaults import server_error
 
 from system_app.forms.payout import PayoutForm
 from system_app.models import Payout, Sales, Bank, Profile
+from util.util import SYSTEM_APP_LOGIN, is_crew
 
 def convert_date(str_time):
 
@@ -24,6 +25,7 @@ def convert_date(str_time):
         raise
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def detail(request, payout_id):
 
     try:
@@ -51,6 +53,7 @@ def detail(request, payout_id):
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def all(request):
 
     try:
@@ -69,6 +72,7 @@ def all(request):
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request, user_id):
 
     try:
@@ -120,6 +124,7 @@ def add(request, user_id):
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def edit(request, payout_id):
 
     try:
@@ -153,6 +158,7 @@ def edit(request, payout_id):
     return render(request, template, context_dict)
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def delete(request, payout_id):
 
     try:

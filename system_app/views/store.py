@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -10,8 +10,10 @@ from django.views.defaults import server_error
 
 from system_app.forms.store import StoreForm
 from system_app.models import Store
+from util.util import SYSTEM_APP_LOGIN, is_crew
 
 @login_required
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def edit(request, store_id):
 
     try:

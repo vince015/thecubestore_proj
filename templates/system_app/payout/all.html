@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <th rowspan="2">ID</th>
-                                <th rowspan="2">Merchant ID</th>
+                                <th rowspan="2">Merchant</th>
                                 <th rowspan="2">Date</th>
                                 <th rowspan="2">Amount</th>
                                 <th colspan="2">Bank Details</th>
@@ -42,9 +42,13 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
-                                            {{ payout.merchant.id|stringformat:"05d" }}
-                                        </a>
+                                        {% if payout.merchant %}
+                                            <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
+                                                {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
+                                            </a>
+                                        {% else %}
+                                            <em>None</em>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         {{ payout.date }}
@@ -56,9 +60,13 @@
                                         {{ payout.bank.owner }}
                                     </td>
                                     <td>
-                                        <a href="#">
-                                            {{ payout.bank.bank }} {{ payout.bank.account }}
-                                        </a>
+                                        {% if payout.bank %}
+                                            <a href="#">
+                                                {{ payout.bank.bank }} {{ payout.bank.account }}
+                                            </a>
+                                        {% else %}
+                                            <em>None</em>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor%}

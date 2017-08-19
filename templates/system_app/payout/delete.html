@@ -33,13 +33,10 @@
             <div class="box-body">
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
-                        <b>Merchant ID</b>
-                        <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
-                            <b>
-                            {{ payout.merchant.id }}
-                            </b>
-                        </a>
+                        <b>Payout ID</b>
+                        <span class="pull-right text-muted">{{ payout.id }}</span>
                     </li>
+                    {% if payout.merchant %}
                     <li class="list-group-item">
                         <b>Merchant Name</b>
                         <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}" class="pull-right">
@@ -49,6 +46,11 @@
                             </b>
                         </a>
                     </li>
+                    {% endif %}
+                    <li class="list-group-item">
+                        <b>Reference Number</b>
+                        <span class="pull-right text-muted">{{ payout.reference_number }}</span>
+                    </li>
                     <li class="list-group-item">
                         <b>Date</b>
                         <span class="pull-right text-muted">{{ payout.date }}</span>
@@ -57,6 +59,7 @@
                         <b>Amount</b>
                         <span class="pull-right text-muted">{{ payout.amount }}</span>
                     </li>
+                    {% if payout.bank %}
                     <li class="list-group-item">
                         <b>Bank Account</b>
                         <span class="pull-right text-muted">
@@ -67,6 +70,7 @@
                         <b>Bank Account Owner</b>
                         <span class="pull-right text-muted">{{ payout.bank.owner }}</span>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
