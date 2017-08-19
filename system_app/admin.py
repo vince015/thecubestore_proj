@@ -105,13 +105,19 @@ class PayoutAdmin(ImportExportModelAdmin):
     resource_class = PayoutResource
 
     def merchant(self, obj):
-        link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
-        return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
+        if obj.user:
+            link = urlresolvers.reverse("admin:auth_user_change", args=[obj.user.id])
+            return '<a href="{0}">{1} {2}</a>'.format(link, obj.user.first_name, obj.user.last_name)
+        else:
+            return '-'
     merchant.allow_tags = True
 
     def bank_account(self, obj):
-        link = urlresolvers.reverse("admin:system_app_bank_change", args=[obj.bank.id])
-        return '<a href="{0}">{1} ({2})</a>'.format(link, obj.bank.bank, obj.bank.account)
+        if obj.bank:
+            link = urlresolvers.reverse("admin:system_app_bank_change", args=[obj.bank.id])
+            return '<a href="{0}">{1} ({2})</a>'.format(link, obj.bank.bank, obj.bank.account)
+        else:
+            return '-'
     bank_account.allow_tags = True
 
 admin.site.register(Payout, PayoutAdmin)

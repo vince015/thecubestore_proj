@@ -170,6 +170,9 @@ class Sales(models.Model):
                                  null=True,
                                  default=0)
 
+    class Meta:
+         verbose_name = "Sale"
+
 class Announcement(models.Model):
 
     issue_date = models.DateField(blank=False,
