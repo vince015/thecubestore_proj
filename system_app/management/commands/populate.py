@@ -9,10 +9,11 @@ class Command(BaseCommand):
         crew_group = Group.objects.get(name='Crew')
 
         # Create a new Crew
-        crew = User.objects.create(username='j.delacruz',
-                                   email='j.delacruz@cubestore.com.ph',
-                                   first_name='Juan',
-                                   last_name='dela Cruz')
-        crew.set_password('pass1234')
-        crew.groups.add(crew_group)
-        crew.save()
+        if not User.objects.filter(username='j.delacruz').exists():
+            crew = User.objects.create(username='j.delacruz',
+                                     email='j.delacruz@cubestore.com.ph',
+                                     first_name='Juan',
+                                     last_name='dela Cruz')
+            crew.set_password('pass1234')
+            crew.groups.add(crew_group)
+            crew.save()
