@@ -18,7 +18,7 @@ class CubeForm(forms.ModelForm):
         widgets = {
                     'unit': forms.TextInput(attrs={'class': 'form-control',
                                                    'placeholder': 'Unit'}),
-                    'rate': forms.NumberInput(attrs={'step': 0.25,
+                    'rate': forms.NumberInput(attrs={'step': 0.01,
                                                      'class': 'form-control',
                                                      'placeholder': 'Monthly Rate'}),
                     'duration': forms.NumberInput(attrs={'class': 'form-control',

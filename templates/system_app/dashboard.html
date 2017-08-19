@@ -33,6 +33,7 @@
                                     <th>Stock</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
+                                    <th>Discount</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -46,17 +47,21 @@
                                                 {{ item.code }}
                                             </a>
                                             <input type="hidden" name="item" value="{{ item.id }}">
+                                            <input type="hidden" name="code" value="{{ item.code }}">
                                         </td>
                                         <td>
                                             {{ item.description }}
                                         </td>
                                         <td>
+                                            <!-- number of items in the inventory -->
                                             {{ item.quantity }}
                                         </td>
                                         <td>
                                             {{ item.price }}
+                                            <input type="hidden" name="price" value="{{ item.price }}">
                                         </td>
                                         <td>
+                                            <!-- purchase quantity -->
                                             <input type="number"
                                                    name="quantity"
                                                    id="quantityInput"
@@ -68,7 +73,18 @@
                                                    placeholder="Quantity of item posited in cube">
                                         </td>
                                         <td>
-                                            <button type="submit" class="btn btn-info btn-flat pull-right">
+                                            <input type="number"
+                                                   name="discount"
+                                                   id="discountInput"
+                                                   max="100"
+                                                   min="0"
+                                                   value="0"
+                                                   required="true"
+                                                   class="form-control pull-right"
+                                                   placeholder="Discount">
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-info btn-flat pull-right buy_btn">
                                                 <i class="fa fa-shopping-basket"></i>
                                             </button>
                                         </td>
@@ -232,6 +248,41 @@
         </section>
     </div>
     <!-- end Main row -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="dialog-confirm">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Confirm Purchase</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Item</b> <a class="pull-right" id="target-item-code"></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Price</b> <a class="pull-right" id="target-item-price"></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Quantity</b> <a class="pull-right" id="target-item-quantity"></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Discount</b> <a class="pull-right" id="target-item-discount"></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Final Price</b> <a class="pull-right" id="target-item-final_price"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-block" id="confirm_btn">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block pagescripts %}
@@ -239,6 +290,34 @@
 <script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
 <script>
     $(function () {
+        var target_form = null;
+        $('.buy_btn').on('click', function (event) {
+            target_form = this.form;
+
+            console.log(target_form.code.value);
+            $('#target-item-code').text(target_form.code.value);
+            $('#target-item-price').text('Php ' + target_form.price.value);
+            $('#target-item-quantity').text(target_form.quantity.value);
+            $('#target-item-discount').text(target_form.discount.value + '%');
+
+            var item_price = parseFloat(target_form.price.value);
+            var item_discount = parseFloat(target_form.discount.value) * 0.01;
+            var item_quantity = parseFloat(target_form.quantity.value);
+            var discounted_price_per_item = item_price - (item_price * item_discount);
+            var final_price = discounted_price_per_item * item_quantity;
+
+            $('#target-item-final_price').text('Php ' + final_price.toFixed(2));
+
+            event.preventDefault();
+            $("#dialog-confirm").modal('show');
+        });
+
+        $('#confirm_btn').on('click', function (event) {
+            target_form.submit();
+            $("#dialog-confirm").modal('hide');
+        });
+
+
         $('#item_table').DataTable({
             'paging'      : true,
             'lengthChange': false,

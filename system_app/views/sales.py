@@ -1,3 +1,4 @@
+from decimal import Decimal
 from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -39,7 +40,11 @@ def add(request):
             item = Item.objects.get(id=request.POST.get('item'))
 
             quantity = int(request.POST.get('quantity'))
-            gross = item.price*quantity
+            discount = Decimal(request.POST.get('discount')) * Decimal(0.01)
+            print('===\n\n {0} {1}\n\n==='.format(type(discount), type(0.01)))
+            new_price = item.price - (item.price * discount)
+
+            gross = new_price * quantity
             net = compute_net(gross, item.vat, item.commission)
             sales = Sales.objects.create(item=item.code,
                                          date=current_date(),
@@ -56,6 +61,7 @@ def add(request):
             raise Exception('Invalid method')
 
     except:
+        raise
         return server_error(request)
 
 
