@@ -16,23 +16,17 @@ INVALID_CREDENTIALS = "Invalid username and/or password"
 INACTIVE_USER = "User is inactive."
 NOT_CREW = "You are authenticated as {0}, but are not authorized to access this page. Would you like to login to a different account?"
 
-def is_member(user, group):
-    return user.groups.filter(name=group).exists()
-
 def user_login(request):
 
     try:
         # Redirection
         template = 'system_app/login.html'
-
         redirect = request.GET.get('next', '/system/dashboard')
-        if not redirect.startswith('/system'):
-            raise Http404
 
         context_dict = dict()
         context_dict['redirect_to'] = redirect
 
-        if not request.user.is_anonymous() and not is_member(request.user, 'Crew'):
+        if not request.user.is_anonymous() and not is_crew(request.user):
             messages.error(request, NOT_CREW.format(request.user))
 
         if request.method == "POST":
@@ -51,20 +45,19 @@ def user_login(request):
                 messages.error(request, INVALID_CREDENTIALS)
                 return render(request, template, context_dict)
 
-    except:
-        raise
+    except Exception as e:
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def user_logout(request):
 
     logout(request)
     return HttpResponseRedirect(SYSTEM_APP_LOGIN)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def dashboard(request):
 
@@ -106,7 +99,6 @@ def dashboard(request):
             context_dict['merchants'].append(merchant_info)
 
     except Exception as ex:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)

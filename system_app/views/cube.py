@@ -24,7 +24,7 @@ def convert_date(str_time):
     except:
         raise
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def detail(request, cube_id):
 
@@ -46,7 +46,7 @@ def detail(request, cube_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def all(request):
 
@@ -65,7 +65,7 @@ def all(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request, user_id):
 
@@ -101,7 +101,7 @@ def add(request, user_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def edit(request, cube_id):
 
@@ -135,7 +135,7 @@ def edit(request, cube_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def delete(request, cube_id):
 

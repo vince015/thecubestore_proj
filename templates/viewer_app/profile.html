@@ -273,6 +273,7 @@
                         <thead>
                             <tr>
                                 <th>Code</th>
+                                <th>Description</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>Cube</th>
@@ -285,6 +286,9 @@
                                         <a href="{% url 'view_item' item_id=item.id %}">
                                             {{ item.code }}
                                         </a>
+                                    </td>
+                                    <td>
+                                        {{ item.description }}
                                     </td>
                                     <td>
                                         {{ item.quantity }}

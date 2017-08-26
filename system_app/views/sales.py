@@ -32,7 +32,7 @@ def current_date():
     except:
         raise
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request):
 
@@ -43,7 +43,6 @@ def add(request):
 
             quantity = int(request.POST.get('quantity'))
             discount = Decimal(request.POST.get('discount')) * Decimal(0.01)
-            print('===\n\n {0} {1}\n\n==='.format(type(discount), type(0.01)))
             new_price = item.price - (item.price * discount)
 
             gross = new_price * quantity
@@ -63,11 +62,10 @@ def add(request):
             raise Exception('Invalid method')
 
     except:
-        raise
         return server_error(request)
 
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def pay(request, payout_id):
 
@@ -91,7 +89,6 @@ def pay(request, payout_id):
             return redirect('/system/payout/{0}'.format(payout.id))
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)

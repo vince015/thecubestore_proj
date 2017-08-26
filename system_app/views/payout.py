@@ -24,7 +24,7 @@ def convert_date(str_time):
     except:
         raise
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def detail(request, payout_id):
 
@@ -47,12 +47,11 @@ def detail(request, payout_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def all(request):
 
@@ -71,7 +70,7 @@ def all(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request, user_id):
 
@@ -118,12 +117,11 @@ def add(request, user_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def edit(request, payout_id):
 
@@ -152,12 +150,11 @@ def edit(request, payout_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def delete(request, payout_id):
 

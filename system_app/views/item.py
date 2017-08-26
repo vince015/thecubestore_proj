@@ -12,7 +12,7 @@ from system_app.forms.item import ItemForm
 from system_app.models import Cube, Item
 from util.util import SYSTEM_APP_LOGIN, is_crew
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def detail(request, item_id):
 
@@ -31,7 +31,7 @@ def detail(request, item_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def all(request):
 
@@ -50,7 +50,7 @@ def all(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request, cube_id):
 
@@ -87,7 +87,7 @@ def add(request, cube_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def edit(request, item_id):
 
@@ -120,7 +120,7 @@ def edit(request, item_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def delete(request, item_id):
 

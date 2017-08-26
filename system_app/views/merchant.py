@@ -15,7 +15,7 @@ from system_app.forms.merchant import MerchantForm, ContactForm, StoreForm, Bank
 from system_app.models import Contact, Store, Bank, Cube, Payout, Sales, Profile
 from util.util import SYSTEM_APP_LOGIN, is_crew
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def detail(request, user_id):
 
@@ -68,7 +68,7 @@ def detail(request, user_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def all(request):
 
@@ -96,7 +96,7 @@ def all(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def add(request):
 
@@ -157,7 +157,7 @@ def add(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def change_password(request):
 
@@ -184,7 +184,7 @@ def change_password(request):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def profile_edit(request, profile_id):
 
@@ -217,7 +217,7 @@ def profile_edit(request, profile_id):
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def contact_edit(request, contact_id):
 
@@ -246,12 +246,11 @@ def contact_edit(request, contact_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def store_edit(request, store_id):
 
@@ -280,12 +279,11 @@ def store_edit(request, store_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def bank_edit(request, bank_id):
 
@@ -314,12 +312,11 @@ def bank_edit(request, bank_id):
         raise Http404
 
     except:
-        raise
         return server_error(request)
 
     return render(request, template, context_dict)
 
-@login_required
+@login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
 def delete(request, user_id):
 

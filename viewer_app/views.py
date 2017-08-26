@@ -30,8 +30,6 @@ def user_login(request):
         # Redirection
         template = 'viewer_app/login.html'
         redirect = request.GET.get('next', '/thecubestore')
-        if not redirect.startswith('/thecubestore'):
-            raise Http404
 
         context_dict = dict()
         context_dict['redirect_to'] = redirect
