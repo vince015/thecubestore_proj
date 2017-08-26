@@ -1,5 +1,17 @@
 from django import forms
+from django.contrib.auth.models import User
 from system_app.models import Contact, Store, Bank, Profile
+
+class UserEditForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+        widgets = {
+                    'email': forms.EmailInput(attrs={'class': 'form-control',
+                                                     'placeholder': 'Valid e-mail address'}),
+                  }
 
 class ContactForm(forms.ModelForm):
 

@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
 
 
-from system_app.forms.merchant import MerchantForm, ContactForm, StoreForm, BankForm, ProfileForm
+from system_app.forms.merchant import MerchantForm, ContactForm, UserEditForm, StoreForm, BankForm, ProfileForm
 from system_app.models import Contact, Store, Bank, Cube, Payout, Sales, Profile
 from util.util import SYSTEM_APP_LOGIN, is_crew
 
@@ -231,8 +231,14 @@ def contact_edit(request, contact_id):
             form = ContactForm(request.POST, instance=instance)
             context_dict['form'] = form
 
-            if form.is_valid():
+            user_form = UserEditForm(request.POST, instance=instance.user)
+            context_dict['user_form'] = user_form
+
+            if form.is_valid() and user_form.is_valid():
                 contact = form.save(commit=False)
+                contact.user = user_form.save(commit=False)
+
+                contact.user.save()
                 contact.save()
 
                 messages.success(request, 'Successfully edited contact.')
@@ -241,6 +247,9 @@ def contact_edit(request, contact_id):
         else:
             form = ContactForm(instance=instance)
             context_dict['form'] = form
+
+            user_form = UserEditForm(instance=instance.user)
+            context_dict['user_form'] = user_form
 
     except ObjectDoesNotExist:
         raise Http404

@@ -173,11 +173,13 @@
             var gross = parseFloat($(this).parent().siblings(':last').text());
             if(this.checked)
             {
-                $('#id_amount').val(amount + gross)
+                var value = amount + gross;
+                $('#id_amount').val(value.toFixed(2));
             }
             else
             {
-                $('#id_amount').val(amount - gross)
+                var value = amount - gross;
+                $('#id_amount').val(value.toFixed(2));
             }
         });
     });
