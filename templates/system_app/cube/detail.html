@@ -76,12 +76,15 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Items in this cube: {{ items|length }} </h3>
-                <a href="{% url 'item_add' cube_id=cube.id %}" class="pull-right">
-                    [Add]
-                </a>
+                <button type="button" class="btn btn-default pull-right">
+                    <a href="{% url 'item_add' cube_id=cube.id %}" class="pull-right">
+                        <i class="fa fa-plus"></i> Add
+                    </a>
+                </button>
             </div>
             {% if items %}
+            <form action="{% url 'item_inventory' cube_id=cube.id %}" method="post">
+            {% csrf_token %}
             <div class="box-body">
                 <table id="item_table" class="table table-bordered table-striped">
                     <thead>
@@ -90,7 +93,9 @@
                             <th>Stock</th>
                             <th>Price</th>
                             <th>Description</th>
-                            <th></th>
+                            <th>In</th>
+                           <th>Out</th>
+                           <!-- <th></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -111,15 +116,40 @@
                                     {{ item.description }}
                                 </td>
                                 <td>
-                                    <a href="#" class="pull-right">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                    <input type="number"
+                                           name="__{{ item.id }}_{{ item.code }}_in"
+                                           id="inInput"
+                                           min="0"
+                                           value="0"
+                                           class="form-control pull-right"
+                                           placeholder="In"
+                                           style="width: 65px">
                                 </td>
+                                <td>
+                                    <input type="number"
+                                           name="__{{ item.id }}_{{ item.code }}_out"
+                                           id="outInput"
+                                           max="{{ item.quantity }}"
+                                           min="0"
+                                           value="0"
+                                           class="form-control pull-right"
+                                           placeholder="Out"
+                                           style="width: 65px">
+                                </td>
+                                <!-- <td>
+                                    <button type="submit" class="btn btn-info btn-flat pull-right go_btn">
+                                        <i class="fa fa-chevron-circle-right"></i>
+                                    </button>
+                                </td> -->
                             </tr>
-                        {% endfor%}
+                       {% endfor%}
                     </tbody>
                 </table>
             </div>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+            </div>
+            </form>
             {% endif %}
         </div>
     </div>
@@ -133,11 +163,16 @@
     $(function () {
         $('#item_table').DataTable({
             'paging'      : false,
-            'lengthChange': false,
+            'lengthChange': true,
             'searching'   : false,
             'ordering'    : true,
             'info'        : true,
-            'autoWidth'   : false
+            'autoWidth'   : false,
+            'aoColumnDefs' : [{
+                   'bSortable' : false,
+                   'sWidth': '10%',
+                   'aTargets' : [ -1, -2, -3 ]
+                 }],
         })
     })
 </script>

@@ -32,7 +32,8 @@ item_url = [
     url(r'^item/all/$', item.all, name='item_all'),
     url(r'^item/add/(?P<cube_id>[0-9]+)$', item.add, name='item_add'),
     url(r'^item/edit/(?P<item_id>[0-9]+)$', item.edit, name='item_edit'),
-    url(r'^item/delete/(?P<item_id>[0-9]+)$', item.delete, name='item_delete')
+    url(r'^item/delete/(?P<item_id>[0-9]+)$', item.delete, name='item_delete'),
+    url(r'^item/inventory/(?P<cube_id>[0-9]+)$', item.inventory, name='item_inventory')
 ]
 
 payout_url = [

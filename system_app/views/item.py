@@ -146,3 +146,35 @@ def delete(request, item_id):
 
     return render(request, template, context_dict)
 
+@login_required(login_url=SYSTEM_APP_LOGIN)
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
+def inventory(request, cube_id):
+
+    try:
+        if request.method == "POST":
+            for item in request.POST:
+                # format: __<item.id>_<item.code>_<type>' e.g.'__1_A1-0001_out'
+                if item.startswith('__'):
+                    splits = item.split('_')
+                    target_item = Item.objects.get(id=int(splits[2]),
+                                                   code=splits[3])
+                    print('{0} => {1}'.format(item, request.POST.get(item)))
+                    val = int(request.POST.get(item))
+                    if splits[-1] == 'in':
+                        target_item.quantity = target_item.quantity + val
+                    elif splits[-1] == 'out':
+                        target_item.quantity = target_item.quantity - val
+                    target_item.save()
+
+            messages.success(request, 'Successfully updates inventory.')
+
+            return redirect('/system/cube/{0}#cube-item'.format(cube_id))
+
+    except ObjectDoesNotExist:
+        raise Http404()
+
+    except:
+        raise
+        return server_error(request)
+
+    return render(request, template, context_dict)
