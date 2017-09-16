@@ -70,7 +70,8 @@
                                                    value="1"
                                                    required="true"
                                                    class="form-control pull-right"
-                                                   placeholder="Quantity of item posited in cube">
+                                                   placeholder="Quantity of item deposited in cube"
+                                                   style="width: 65px">
                                         </td>
                                         <td>
                                             <input type="number"
@@ -81,10 +82,15 @@
                                                    value="0"
                                                    required="true"
                                                    class="form-control pull-right"
-                                                   placeholder="Discount">
+                                                   placeholder="Discount"
+                                                   style="width: 65px">
                                         </td>
                                         <td>
+                                            {% if item.quantity > 0%}
                                             <button type="submit" class="btn btn-info btn-flat pull-right buy_btn">
+                                            {% else %}
+                                            <button type="submit" disabled class="btn btn-info btn-flat pull-right buy_btn disabled">
+                                            {% endif %}
                                                 <i class="fa fa-shopping-basket"></i>
                                             </button>
                                         </td>
@@ -294,7 +300,6 @@
         $('.buy_btn').on('click', function (event) {
             target_form = this.form;
 
-            console.log(target_form.code.value);
             $('#target-item-code').text(target_form.code.value);
             $('#target-item-price').text('Php ' + target_form.price.value);
             $('#target-item-quantity').text(target_form.quantity.value);
