@@ -165,7 +165,8 @@ def cube(request, cube_id):
         template = 'viewer_app/cube.html'
         context_dict = dict()
 
-        cube = Cube.objects.get(id=cube_id)
+        cube = Cube.objects.get(id=cube_id,
+                                user=request.user)
         context_dict['cube'] = cube
 
         items = Item.objects.filter(cube=cube)
@@ -187,7 +188,8 @@ def item(request, item_id):
         template = 'viewer_app/item.html'
         context_dict = dict()
 
-        item = Item.objects.get(id=item_id)
+        item = Item.objects.get(id=item_id,
+                                cube__user=request.user)
         context_dict['item'] = item
 
     except ObjectDoesNotExist:
