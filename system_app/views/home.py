@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from django.views.defaults import server_error
 from django.core.exceptions import PermissionDenied
@@ -69,7 +70,7 @@ def dashboard(request):
         context_dict['user'] = user
 
         items = Item.objects.all()
-        context_dict['items'] = items
+        context_dict['items'] = items[:10]
 
         sales = Sales.objects.all().order_by('-date')
         context_dict['sales'] = sales
@@ -100,5 +101,43 @@ def dashboard(request):
 
     except Exception as ex:
         return server_error(request)
+
+    return render(request, template, context_dict)
+
+@login_required()
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
+def search(request):
+
+    try:
+        context_dict = dict()
+        template = 'system_app/dashboard/search.html'
+
+        q = request.GET.get('q')
+        if q:
+            items = Item.objects.filter(Q(description__icontains=q) |
+                                        Q(code__icontains=q) )
+            context_dict['items'] = items
+        else:
+            items = Item.objects.all()[:10]
+            context_dict['items'] = items
+
+    except Exception as e:
+        raise e
+
+    return render(request, template, context_dict)
+
+@login_required()
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
+def buy(request, item_id):
+
+    try:
+        context_dict = dict()
+        template = 'system_app/dashboard/buy.html'
+
+        item = Item.objects.get(pk=item_id)
+        context_dict['item'] = item
+
+    except Exception as e:
+        raise e
 
     return render(request, template, context_dict)

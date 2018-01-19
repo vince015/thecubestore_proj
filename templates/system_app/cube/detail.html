@@ -87,12 +87,20 @@
             {% csrf_token %}
             <div class="box-body">
                 <table id="item_table" class="table table-bordered table-striped">
-                    <thead>
+                        <colgroup>
+                            <col style="width:10%">
+                            <col style="width:55%">
+                            <col style="width:10%">
+                            <col style="width:15%">
+                            <col style="width:5%">
+                            <col style="width:5%">
+                        </colgroup>
+                        <thead>
                         <tr>
                             <th>Code</th>
+                            <th>Description</th>
                             <th>Stock</th>
                             <th>Price</th>
-                            <th>Description</th>
                             <th>In</th>
                            <th>Out</th>
                            <!-- <th></th> -->
@@ -107,13 +115,13 @@
                                     </a>
                                 </td>
                                 <td>
+                                    {{ item.description }}
+                                </td>
+                                <td>
                                     {{ item.quantity }}
                                 </td>
                                 <td>
                                     {{ item.price }}
-                                </td>
-                                <td>
-                                    {{ item.description }}
                                 </td>
                                 <td>
                                     <input type="number"

@@ -3,14 +3,43 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.db.models import Q
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 
 from system_app.forms.item import ItemForm
 from system_app.models import Cube, Item
 from util.util import SYSTEM_APP_LOGIN, is_crew
+
+
+class ItemsListJson(BaseDatatableView):
+    model = Item
+    columns = ['code', 'description', 'quantity', 'price', 'cube']
+    order_columns = ['code', 'description', 'quantity', 'price', 'cube.unit']
+
+    def get_initial_queryset(self):
+        return Item.objects.all()
+
+    def render_column(self, row, column):
+        if column == 'code':
+            link = '<a href="/system/item/{0}">{1}</a>'.format(row.id, row.code)
+            return link
+        elif column == 'cube':
+            link = '<a href="/system/cube/{0}">{1}</a>'.format(row.cube.id, row.cube.unit)
+            return link
+        else:
+            return super(ItemsListJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(description__icontains=search) |
+                           Q(code__icontains=search) |
+                           Q(cube__unit__icontains=search))
+        return qs
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)

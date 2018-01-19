@@ -4,6 +4,15 @@
 {% load staticfiles %}
 {% block pagetitle %}Dashboard{% endblock %}
 
+{% block pagestylesheets %}
+<style type="text/css">
+    .table-hover
+    {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
 {% block breadcrumb %}
 <h1>
     Dashboard
@@ -25,29 +34,34 @@
                 </ul>
                 <div class="tab-content">
                     <div class="active tab-pane" id="items">
-                        <table id="item_table" class="table table-bordered table-striped">
+                        <div class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Search"
+                                   name="q"
+                                   id="search-box">
+                            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                        <table class="table table-bordered table-striped table-hover">
+                            <colgroup>
+                                <col style="width:10%">
+                                <col style="width:65%">
+                                <col style="width:10%">
+                                <col style="width:15%">
+                            </colgroup>
                             <thead>
                                 <tr>
                                     <th>Item</th>
                                     <th>Desciption</th>
                                     <th>Stock</th>
                                     <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Discount</th>
-                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="search-results">
                                 {% for item in items %}
-                                    <tr>
-                                        <form action="{% url 'sales_add' %}" method="post">
-                                        {% csrf_token %}
+                                    <tr onclick="itemSelect({{ item.id }})">
                                         <td>
-                                            <a href="{% url 'item_detail' item_id=item.id %}">
-                                                {{ item.code }}
-                                            </a>
-                                            <input type="hidden" name="item" value="{{ item.id }}">
-                                            <input type="hidden" name="code" value="{{ item.code }}">
+                                            {{ item.code }}
                                         </td>
                                         <td>
                                             {{ item.description }}
@@ -58,43 +72,7 @@
                                         </td>
                                         <td>
                                             {{ item.price }}
-                                            <input type="hidden" name="price" value="{{ item.price }}">
                                         </td>
-                                        <td>
-                                            <!-- purchase quantity -->
-                                            <input type="number"
-                                                   name="quantity"
-                                                   id="quantityInput"
-                                                   max="{{ item.quantity }}"
-                                                   min="1"
-                                                   value="1"
-                                                   required="true"
-                                                   class="form-control pull-right"
-                                                   placeholder="Quantity of item deposited in cube"
-                                                   style="width: 65px">
-                                        </td>
-                                        <td>
-                                            <input type="number"
-                                                   name="discount"
-                                                   id="discountInput"
-                                                   max="100"
-                                                   min="0"
-                                                   value="0"
-                                                   required="true"
-                                                   class="form-control pull-right"
-                                                   placeholder="Discount"
-                                                   style="width: 65px">
-                                        </td>
-                                        <td>
-                                            {% if item.quantity > 0%}
-                                            <button type="submit" class="btn btn-info btn-flat pull-right buy_btn">
-                                            {% else %}
-                                            <button type="submit" disabled class="btn btn-info btn-flat pull-right buy_btn disabled">
-                                            {% endif %}
-                                                <i class="fa fa-shopping-basket"></i>
-                                            </button>
-                                        </td>
-                                    </form>
                                     </tr>
                                 {% endfor%}
                             </tbody>
@@ -116,49 +94,23 @@
                         </div>
 
                         <table id="sales_table" class="table table-bordered table-striped">
+                            <colgroup>
+                                <col style="width:60%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th>Code</th>
+                                    <th>Item</th>
                                     <th>Date</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
+                                    <th>Qty</th>
                                     <th>Gross</th>
-                                    <th>Net</th>
                                     <th>Payout</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for sale in sales %}
-                                    <tr>
-                                        <td>
-                                            {{ sale.item }}
-                                        </td>
-                                        <td>
-                                            {{ sale.date|date:'Y-m-d' }}
-                                        </td>
-                                        <td>
-                                            {{ sale.quantity }}
-                                        </td>
-                                        <td>
-                                            {{ sale.gross|div:sale.quantity }}
-                                        </td>
-                                        <td>
-                                            {{ sale.gross }}
-                                        </td>
-                                        <td>
-                                            {{ sale.net }}
-                                        </td>
-                                        <td>
-                                            {% if sale.payout %}
-                                                <a href="{% url 'payout_detail' payout_id=sale.payout %}">
-                                                    {{ sale.payout }}
-                                                </a>
-                                            {% else %}
-                                                <i>Unpaid</i>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor%}
                             </tbody>
                         </table>
                     </div>
@@ -205,9 +157,16 @@
                     </div>
                     <div class="tab-pane" id="payouts">
                         <table id="payout_table" class="table table-bordered table-striped">
+                            <colgroup>
+                                <col style="width:10%">
+                                <col style="width:45%">
+                                <col style="width:10%">
+                                <col style="width:25%">
+                                <col style="width:10%">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th>Reference No.</th>
+                                    <th>Ref No.</th>
                                     <th>Merchant</th>
                                     <th>Date</th>
                                     <th>Bank</th>
@@ -256,38 +215,6 @@
     <!-- end Main row -->
 
 <div class="modal fade" tabindex="-1" role="dialog" id="dialog-confirm">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Confirm Purchase</h4>
-            </div>
-            <div class="modal-body">
-                <ul class="list-group list-group-unbordered">
-                    <li class="list-group-item">
-                        <b>Item</b> <a class="pull-right" id="target-item-code"></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Price</b> <a class="pull-right" id="target-item-price"></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Quantity</b> <a class="pull-right" id="target-item-quantity"></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Discount</b> <a class="pull-right" id="target-item-discount"></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Final Price</b> <a class="pull-right" id="target-item-final_price"></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-block" id="confirm_btn">Submit</button>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
@@ -295,54 +222,100 @@
 <script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
 <script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
 <script>
+    function itemSelect(id)
+    {
+        $.ajax({
+            type: "GET",
+            url: "/system/buy/" + id,
+            success: buySuccess,
+            dataType: "html"
+        })
+    }
+    function buySuccess(data, textStatus, jqXHR)
+    {
+        $("#dialog-confirm").html(data).modal('show');
+        getFinalPrice();
+
+        $("#quantityInput").on('change', function() {
+            getFinalPrice();
+        });
+
+        $("#discountInput").on('change', function() {
+            getFinalPrice();
+        });
+    }
+    function getFinalPrice()
+    {
+        var item_price = parseFloat($('#item-price').text());
+        var item_discount = parseFloat($('#discountInput').val()) * 0.01;
+        var item_quantity = parseFloat($('#quantityInput').val());
+        var discounted_price_per_item = item_price - (item_price * item_discount);
+        var final_price = discounted_price_per_item * item_quantity;
+
+        $('#target-item-final_price').text(final_price.toFixed(2));
+    }
+
+
+    $("#search-box").keyup(function() {
+        $.ajax({
+            type: "GET",
+            url: "{% url 'search' %}",
+            data: {
+                "q": $(this).val(),
+            },
+            success: itemSearchResult,
+            dataType: "html"
+        })
+    });
+    function itemSearchResult(data, textStatus, jqXHR)
+    {
+        $("#search-results").html(data);
+    }
+
     $(function () {
         var target_form = null;
-        $('.buy_btn').on('click', function (event) {
-            target_form = this.form;
 
-            $('#target-item-code').text(target_form.code.value);
-            $('#target-item-price').text('Php ' + target_form.price.value);
-            $('#target-item-quantity').text(target_form.quantity.value);
-            $('#target-item-discount').text(target_form.discount.value + '%');
+        var dt_language = {
+            "emptyTable":     "{{ 'No data available in table' }}",
+            "info":           "{{ 'Showing _START_ to _END_ of _TOTAL_ entries' }}",
+            "infoEmpty":      "{{ 'Showing 0 to 0 of 0 entries' }}",
+            "infoFiltered":   "{{ '(filtered from _MAX_ total entries)' }}",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "{{ 'Show _MENU_ entries' }}",
+            "loadingRecords": "{{ 'Loading...' }}",
+            "processing":     "{{ 'Processing...' }}",
+            "search":         "{{ 'Search:' }}",
+            "zeroRecords":    "{{ 'No matching records found' }}",
+            "paginate": {
+                "first":      "{{ 'First' }}",
+                "last":       "{{ 'Last' }}",
+                "next":       "{{ 'Next' }}",
+                "previous":   "{{ 'Previous' }}"
+            },
+            "aria": {
+                "sortAscending":  "{{ ': activate to sort column ascending' }}",
+                "sortDescending": "{{ ': activate to sort column descending' }}"
+            }
+        }
 
-            var item_price = parseFloat(target_form.price.value);
-            var item_discount = parseFloat(target_form.discount.value) * 0.01;
-            var item_quantity = parseFloat(target_form.quantity.value);
-            var discounted_price_per_item = item_price - (item_price * item_discount);
-            var final_price = discounted_price_per_item * item_quantity;
-
-            $('#target-item-final_price').text('Php ' + final_price.toFixed(2));
-
-            event.preventDefault();
-            $("#dialog-confirm").modal('show');
-        });
-
-        $('#confirm_btn').on('click', function (event) {
-            target_form.submit();
-            $("#dialog-confirm").modal('hide');
-        });
-
-
-        $('#item_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'aoColumnDefs' : [{
-                               'bSortable' : false,
-                               'aTargets' : [ -1 ]
-                             }]
-        });
-
-        $('#sales_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'order'       : [[1, 'desc']]
+        $('#sales_table').dataTable({
+            order: [[1, 'desc']],
+            language: dt_language,
+            lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+            columnDefs: [
+                {
+                    orderable: true,
+                    searchable: true,
+                    className: "center",
+                    targets: [0, 1]
+                }
+            ],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: "{% url 'sales_json' %}"
         });
 
         $('#merchants_table').DataTable({

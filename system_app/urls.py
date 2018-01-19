@@ -1,10 +1,13 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 from system_app.views import home, merchant, cube, item, payout, sales, announcement
 
 home_url = [
     url(r'^login/$', home.user_login, name='login'),
     url(r'^logout/$', home.user_logout, name='logout'),
-    url(r'^dashboard/$', home.dashboard, name='dashboard')
+    url(r'^dashboard/$', home.dashboard, name='dashboard'),
+    url(r'^search/$', home.search, name='search'),
+    url(r'^buy/(?P<item_id>[0-9]+)$', home.buy, name='buy')
 ]
 
 merchant_url = [
@@ -33,7 +36,8 @@ item_url = [
     url(r'^item/add/(?P<cube_id>[0-9]+)$', item.add, name='item_add'),
     url(r'^item/edit/(?P<item_id>[0-9]+)$', item.edit, name='item_edit'),
     url(r'^item/delete/(?P<item_id>[0-9]+)$', item.delete, name='item_delete'),
-    url(r'^item/inventory/(?P<cube_id>[0-9]+)$', item.inventory, name='item_inventory')
+    url(r'^item/inventory/(?P<cube_id>[0-9]+)$', item.inventory, name='item_inventory'),
+    url(r'^item/json$', login_required(item.ItemsListJson.as_view()), name='items_json')
 ]
 
 payout_url = [
@@ -46,7 +50,8 @@ payout_url = [
 
 sales_url = [
     url(r'^sales/add/$', sales.add, name='sales_add'),
-    url(r'^sales/pay/(?P<payout_id>[0-9]+)$', sales.pay, name='sales_pay')
+    url(r'^sales/pay/(?P<payout_id>[0-9]+)$', sales.pay, name='sales_pay'),
+    url(r'^sales/json$', login_required(sales.SalesListJson.as_view()), name='sales_json')
 ]
 
 announcement_url = [

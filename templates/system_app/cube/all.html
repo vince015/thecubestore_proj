@@ -38,10 +38,10 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {{ cube.next_due_date }}
+                                        {{ cube.next_due_date | date:'Y-m-d'}}
                                     </td>
                                     <td>
-                                        {{ cube.start_date }} - {{ cube.end_date }}
+                                        {{ cube.start_date | date:'Y-m-d'}} - {{ cube.end_date | date:'Y-m-d' }}
                                     </td>
                                     <td>
                                         {{ cube.rate }}
