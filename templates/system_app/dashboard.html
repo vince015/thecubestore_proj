@@ -24,195 +24,58 @@
 
 {% block main %}
     <div class="row">
-        <section class="col-lg-12 connectedSortable">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#items" data-toggle="tab">Items</a></li>
-                    <li><a href="#sales" data-toggle="tab">Sales</a></li>
-                    <li><a href="#merchants" data-toggle="tab">Merchants</a></li>
-                    <li><a href="#payouts" data-toggle="tab">Payouts</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="active tab-pane" id="items">
-                        <div class="input-group">
-                            <input type="text"
-                                   class="form-control"
-                                   placeholder="Search"
-                                   name="q"
-                                   id="search-box">
-                            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                        </div>
-                        <table class="table table-bordered table-striped table-hover">
-                            <colgroup>
-                                <col style="width:10%">
-                                <col style="width:65%">
-                                <col style="width:10%">
-                                <col style="width:15%">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Desciption</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody id="search-results">
-                                {% for item in items %}
-                                    <tr onclick="itemSelect({{ item.id }})">
-                                        <td>
-                                            {{ item.code }}
-                                        </td>
-                                        <td>
-                                            {{ item.description }}
-                                        </td>
-                                        <td>
-                                            <!-- number of items in the inventory -->
-                                            {{ item.quantity }}
-                                        </td>
-                                        <td>
-                                            {{ item.price }}
-                                        </td>
-                                    </tr>
-                                {% endfor%}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="sales">
-                        <div class="col-lg-12 col-xs-12">
-                            <!-- small box -->
-                            <div class="small-box bg-blue">
-                                <div class="inner">
-                                    <h3>{{ unpaid }}<sup style="font-size: 20px">Php</sup></h3>
-
-                                    <p>Unpaid Sales</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <table id="sales_table" class="table table-bordered table-striped">
-                            <colgroup>
-                                <col style="width:60%">
-                                <col style="width:10%">
-                                <col style="width:10%">
-                                <col style="width:10%">
-                                <col style="width:10%">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Date</th>
-                                    <th>Qty</th>
-                                    <th>Gross</th>
-                                    <th>Payout</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="merchants">
-                        <table id="merchants_table" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Contact Number</th>
-                                    <th>Next Due Date</th>
-                                    <th>Cube</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for merchant in merchants %}
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
-                                                {{ merchant.profile.merchant_id }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'merchant_detail' user_id=merchant.profile.id %}">
-                                                {{ merchant.profile.first_name }}
-                                                {{ merchant.profile.last_name }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{ merchant.contact.contact_number }}
-                                        </td>
-                                        <td>
-                                            {{ merchant.cube.next_due_date|date:'Y-m-d' }}
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'cube_detail' cube_id=merchant.cube.id %}">
-                                                {{ merchant.cube.unit }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor%}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="payouts">
-                        <table id="payout_table" class="table table-bordered table-striped">
-                            <colgroup>
-                                <col style="width:10%">
-                                <col style="width:45%">
-                                <col style="width:10%">
-                                <col style="width:25%">
-                                <col style="width:10%">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Ref No.</th>
-                                    <th>Merchant</th>
-                                    <th>Date</th>
-                                    <th>Bank</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for payout in payouts %}
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'payout_detail' payout_id=payout.id %}">
-                                                {{ payout.reference_number }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {% if payout.merchant %}
-                                                <a href="{% url 'merchant_detail' user_id=payout.merchant.id %}">
-                                                    {{ payout.merchant.first_name }} {{ payout.merchant.last_name }}
-                                                </a>
-                                            {% else %}
-                                                <em>None</em>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {{ payout.date|date:'Y-m-d' }}
-                                        </td>
-                                        <td>
-                                            {% if payout.bank %}
-                                                ({{ payout.bank.bank }}) {{ payout.bank.account }}
-                                            {% else %}
-                                                <em>None</em>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {{ payout.amount }}
-                                        </td>
-                                    </tr>
-                                {% endfor%}
-                            </tbody>
-                        </table>
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Search"
+                               name="q"
+                               id="search-box">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
                     </div>
                 </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-striped table-hover">
+                        <colgroup>
+                            <col style="width:10%">
+                            <col style="width:65%">
+                            <col style="width:10%">
+                            <col style="width:15%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Desciption</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search-results">
+                            {% for item in items %}
+                                <tr onclick="itemSelect({{ item.id }})">
+                                    <td>
+                                        {{ item.code }}
+                                    </td>
+                                    <td>
+                                        {{ item.description }}
+                                    </td>
+                                    <td>
+                                        <!-- number of items in the inventory -->
+                                        {{ item.quantity }}
+                                    </td>
+                                    <td>
+                                        {{ item.price }}
+                                    </td>
+                                </tr>
+                            {% endfor%}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
-    <!-- end Main row -->
 
 <div class="modal fade" tabindex="-1" role="dialog" id="dialog-confirm">
 </div>
@@ -257,6 +120,7 @@
 
 
     $("#search-box").keyup(function() {
+        $("#search-results").html("<tr><i class='fa fa-refresh fa-spin'></i></tr>");
         $.ajax({
             type: "GET",
             url: "{% url 'search' %}",
@@ -265,7 +129,7 @@
             },
             success: itemSearchResult,
             dataType: "html"
-        })
+        });
     });
     function itemSearchResult(data, textStatus, jqXHR)
     {

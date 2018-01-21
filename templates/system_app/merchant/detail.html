@@ -133,6 +133,12 @@
             <div class="tab-content">
                 <div id="cube" class="active tab-pane">
                     <table id="cube_table" class="table table-bordered table-striped">
+                        <colgroup>
+                            <col style="width:40%">
+                            <col style="width:20%">
+                            <col style="width:15%">
+                            <col style="width:25%">
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Unit</th>
@@ -148,35 +154,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for cube in cubes %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'cube_detail' cube_id=cube.id %}">
-                                        {{ cube.unit }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ cube.next_due_date|date:'Y-m-d' }}
-                                </td>
-                                <td>
-                                    {{ cube.rate }}
-                                </td>
-                                <td>
-                                    <a href="{% url 'cube_edit' cube_id=cube.id %}" class="pull-right">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor%}
                         </tbody>
                     </table>
                 </div>
 
                 <div id="payout" class="tab-pane">
                     <table id="payout_table" class="table table-bordered table-striped">
+                        <colgroup>
+                            <col style="width:40%">
+                            <col style="width:20%">
+                            <col style="width:15%">
+                            <col style="width:25%">
+                        </colgroup>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Ref. No.</th>
                                 <th>Date</th>
                                 <th>Amount</th>
                                 <th>
@@ -189,26 +181,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for payout in payouts %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'payout_detail' payout_id=payout.id %}">
-                                        {{ payout.id }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ payout.date|date:'Y-m-d' }}
-                                </td>
-                                <td>
-                                    {{ payout.amount }}
-                                </td>
-                                <td>
-                                    <a href="{% url 'payout_edit' payout_id=payout.id %}" class="pull-right">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor%}
                         </tbody>
                     </table>
                 </div>
@@ -227,45 +199,25 @@
                     </div>
 
                     <table id="sales_table" class="table table-bordered table-striped">
+                        <colgroup>
+                            <col style="width:30%">
+                            <col style="width:20%">
+                            <col style="width:5%">
+                            <col style="width:10%">
+                            <col style="width:10%">
+                            <col style="width:125%">
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Item</th>
                                 <th>Date</th>
-                                <th>Quantity</th>
+                                <th>Qty</th>
                                 <th>Gross</th>
                                 <th>Net</th>
                                 <th>Payout</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for sale in sales %}
-                            <tr>
-                                <td>
-                                    {{ sale.item }}
-                                </td>
-                                <td>
-                                    {{ sale.date|date:'Y-m-d' }}
-                                </td>
-                                <td>
-                                    {{ sale.quantity }}
-                                </td>
-                                <td>
-                                    {{ sale.gross }}
-                                </td>
-                                <td>
-                                    {{ sale.net }}
-                                </td>
-                                <td>
-                                    {% if sale.payout %}
-                                        <a href="{% url 'view_payout' payout_id=sale.payout %}">
-                                            {{ sale.payout }}
-                                        </a>
-                                    {% else %}
-                                        --
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor%}
                         </tbody>
                     </table>
                 </div>
@@ -313,7 +265,9 @@
                     </form>
                     <form action="{% url 'merchant_delete' user_id=profile.id %}" method="post" id="delete_form">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm" id="delete_btn">Delete...</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="delete_btn">
+                            <i class="fa fa-trash"></i> Delete
+                        </button>
                     </form>
                         </div>
                 </div>
@@ -349,40 +303,69 @@
 <script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
 <script>
     $(function () {
-        $('#cube_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'order'       : [[1, 'desc']],
-            'aoColumnDefs' : [{
-                               'bSortable' : false,
-                               'aTargets' : [ -1 ]
-                             }]
+        var dt_language = {
+            "emptyTable":     "{{ 'No data available in table' }}",
+            "info":           "{{ 'Showing _START_ to _END_ of _TOTAL_ entries' }}",
+            "infoEmpty":      "{{ 'Showing 0 to 0 of 0 entries' }}",
+            "infoFiltered":   "{{ '(filtered from _MAX_ total entries)' }}",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "{{ 'Show _MENU_ entries' }}",
+            "loadingRecords": "{{ 'Loading...' }}",
+            "processing":     "{{ 'Processing...' }}",
+            "search":         "{{ 'Search:' }}",
+            "zeroRecords":    "{{ 'No matching records found' }}",
+            "paginate": {
+                "first":      "{{ 'First' }}",
+                "last":       "{{ 'Last' }}",
+                "next":       "{{ 'Next' }}",
+                "previous":   "{{ 'Previous' }}"
+            },
+            "aria": {
+                "sortAscending":  "{{ ': activate to sort column ascending' }}",
+                "sortDescending": "{{ ': activate to sort column descending' }}"
+            }
+        }
+        $('#cube_table').dataTable({
+            language: dt_language,
+            lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+            columnDefs: [
+                {
+                    orderable: false,
+                    searchable: false,
+                    targets: [3]
+                }
+            ],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: "{% url 'merchants_cube_json' user_id=profile.id %}"
         });
-        $('#payout_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'order'       : [[1, 'desc']],
-            'aoColumnDefs' : [{
-                               'bSortable' : false,
-                               'aTargets' : [ -1 ]
-                             }]
+        $('#payout_table').dataTable({
+            language: dt_language,
+            lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+            columnDefs: [
+                {
+                    orderable: false,
+                    searchable: false,
+                    targets: [3]
+                }
+            ],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: "{% url 'merchants_payout_json' user_id=profile.id %}"
         });
-        $('#sales_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'order'       : [[1, 'desc']]
+        $('#sales_table').dataTable({
+            language: dt_language,
+            lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: "{% url 'merchants_sale_json' user_id=profile.id %}"
         });
         $('#delete_btn').on('click', function (event) {
             event.preventDefault();

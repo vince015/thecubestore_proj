@@ -23,43 +23,25 @@
                 {% csrf_token %}
                 <div class="box-body">
                     <table id="sales_table" class="table table-bordered table-striped">
+                        <colgroup>
+                            <col style="width:5%">
+                            <col style="width:20%">
+                            <col style="width:30%">
+                            <col style="width:5%">
+                            <col style="width:20%">
+                            <col style="width:20%">
+                        </colgroup>
                         <thead>
                             <tr>
-                                <th></th>
+                                <th><i class="fa fa-check-circle-o"></i></th>
                                 <th>Code</th>
                                 <th>Date</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
+                                <th>Qty</th>
                                 <th>Gross</th>
                                 <th>Net</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for sale in sales %}
-                                <tr>
-                                    <td>
-                                      <input type="checkbox" name="sales" value="{{ sale.id }}">
-                                    </td>
-                                    <td>
-                                        {{ sale.item }}
-                                    </td>
-                                    <td>
-                                        {{ sale.date }}
-                                    </td>
-                                    <td>
-                                        {{ sale.quantity }}
-                                    </td>
-                                    <td>
-                                        {{ sale.gross|div:sale.quantity }}
-                                    </td>
-                                    <td>
-                                        {{ sale.gross }}
-                                    </td>
-                                    <td>
-                                        {{ sale.net }}
-                                    </td>
-                                </tr>
-                            {% endfor%}
                         </tbody>
                     </table>
                 </div>
@@ -77,14 +59,48 @@
 <script src="{% static "bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
 <script>
     $(function () {
-        $('#sales_table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false
-        })
+        var dt_language = {
+            "emptyTable":     "{{ 'No data available in table' }}",
+            "info":           "{{ 'Showing _START_ to _END_ of _TOTAL_ entries' }}",
+            "infoEmpty":      "{{ 'Showing 0 to 0 of 0 entries' }}",
+            "infoFiltered":   "{{ '(filtered from _MAX_ total entries)' }}",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "{{ 'Show _MENU_ entries' }}",
+            "loadingRecords": "{{ 'Loading...' }}",
+            "processing":     "{{ 'Processing...' }}",
+            "search":         "{{ 'Search:' }}",
+            "zeroRecords":    "{{ 'No matching records found' }}",
+            "paginate": {
+                "first":      "{{ 'First' }}",
+                "last":       "{{ 'Last' }}",
+                "next":       "{{ 'Next' }}",
+                "previous":   "{{ 'Previous' }}"
+            },
+            "aria": {
+                "sortAscending":  "{{ ': activate to sort column ascending' }}",
+                "sortDescending": "{{ ': activate to sort column descending' }}"
+            }
+        }
+
+        $('#sales_table').dataTable({
+            order: [[3, 'desc']],
+            columnDefs: [
+                {
+                    orderable: false,
+                    searchable: false,
+                    className: "center",
+                    targets: [0]
+                }
+            ],
+            language: dt_language,
+            lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: "{% url 'sales_pay_json' %}"
+        });
     })
 </script>
 {% endblock %}

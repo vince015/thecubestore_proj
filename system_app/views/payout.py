@@ -5,9 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.db.models import Q
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 
 from system_app.forms.payout import PayoutForm
@@ -23,6 +25,59 @@ def convert_date(str_time):
 
     except:
         raise
+
+class PayoutsListJson(BaseDatatableView):
+    model = Payout
+    columns = ['reference_number', 'merchant', 'date', 'bank', 'amount']
+    order_columns = ['reference_number', 'merchant.first_name', 'date', 'bank', 'amount']
+
+    def get_initial_queryset(self):
+        return Payout.objects.all()
+
+    def render_column(self, row, column):
+        if column == 'reference_number':
+            link = '<a href="/system/payout/{0}">{1}</a>'.format(row.id, row.reference_number)
+            return link
+        elif column == 'merchant':
+            link = ''
+            if row.merchant:
+                link = '<a href="/system/merchant/{0}">{1} {2}</a>'.format(row.merchant.id, row.merchant.first_name, row.merchant.last_name)
+            return link
+        elif column == 'bank':
+            link = ''
+            if row.merchant:
+                link = '{0}'.format(row.bank.bank)
+            return link
+        else:
+            return super(PayoutsListJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(reference_number__icontains=search) |
+                           Q(date_number__icontains=search) |
+                           Q(bank_number__icontains=search) |
+                           Q(amount_number__icontains=search) |
+                           Q(merchant__first_name__icontains=search) |
+                           Q(merchant__last_name__icontains=search))
+        return qs
+
+class PayoutSalesJson(BaseDatatableView):
+    model = Sales
+    columns = ['item', 'date', 'quantity', 'gross', 'net']
+    order_columns = ['item', 'date', 'quantity', 'gross', 'net']
+
+    def get_initial_queryset(self, **kwargs):
+        payout_id = self.kwargs.get('payout_id')
+        return Sales.objects.filter(payout=payout_id)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(item__icontains=search) |
+                           Q(date__icontains=search) |
+                           Q(payout__icontains=search))
+        return qs
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
@@ -57,10 +112,6 @@ def all(request):
 
     try:
         template = 'system_app/payout/all.html'
-        context_dict = dict()
-
-        payouts = Payout.objects.all()
-        context_dict['payouts'] = payouts
 
     except ObjectDoesNotExist:
         raise Http404
@@ -68,7 +119,7 @@ def all(request):
     except:
         return server_error(request)
 
-    return render(request, template, context_dict)
+    return render(request, template)
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)

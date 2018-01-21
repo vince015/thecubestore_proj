@@ -1,55 +1,49 @@
 {% extends "system_app/base.html" %}
 
 {% load staticfiles %}
-{% block pagetitle %}Merchants{% endblock %}
+{% block pagetitle %}Cubes{% endblock %}
 
 {% block breadcrumb %}
 <h1>
-    Merchant
+    Sales
     <small>ALL</small>
 </h1>
 <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-    <li class="active">Merchants</li>
+    <li class="active">Sales</li>
 </ol>
 {% endblock %}
 
 {% block main %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <button type="button" class="btn btn-default pull-right">
-                    <a href="{% url 'merchant_add' %}" class="pull-right">
-                        <i class="fa fa-plus"></i> Add
-                    </a>
-                </button>
-            </div>
-            <div class="box-body">
-                <table id="merchant_table" class="table table-bordered table-striped">
-                    <colgroup>
-                        <col style="width:5%">
-                        <col style="width:40%">
-                        <col style="width:10%">
-                        <col style="width:45%">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Sales</th>
-                            <th>Cubes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="sales_table" class="table table-bordered table-striped">
+                        <colgroup>
+                            <col style="width:15%">
+                            <col style="width:30%">
+                            <col style="width:15%">
+                            <col style="width:20%">
+                            <col style="width:20%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Date</th>
+                                <th>Qty</th>
+                                <th>Gross</th>
+                                <th>Payout</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
-
 
 {% block pagescripts %}
 <script src="{% static "bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
@@ -80,23 +74,17 @@
             }
         }
 
-        $('#merchant_table').dataTable({
-            order: [[0, 'asc']],
+        $('#sales_table').dataTable({
+            order: [[1, 'desc']],
             language: dt_language,
             lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
-            columnDefs: [
-                {
-                    orderable: false,
-                    searchable: false,
-                    targets: [2, 3]
-                }
-            ],
             searching: true,
             processing: true,
             serverSide: true,
             stateSave: true,
-            ajax: "{% url 'merchants_json' %}"
+            ajax: "{% url 'sales_json' %}"
         });
+
     })
 </script>
 {% endblock %}

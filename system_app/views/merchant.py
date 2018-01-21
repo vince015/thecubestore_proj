@@ -6,14 +6,147 @@ from django.http import Http404
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.defaults import server_error
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 
 from system_app.forms.merchant import MerchantForm, ContactForm, UserEditForm, StoreForm, BankForm, ProfileForm
-from system_app.models import Contact, Store, Bank, Cube, Payout, Sales, Profile
+from system_app.models import Contact, Store, Bank, Cube, Payout, Sales, Profile, Item
 from util.util import SYSTEM_APP_LOGIN, is_crew
+
+
+class MerchantsListJson(BaseDatatableView):
+    model = Profile
+    columns = ['merchant_id', 'name', 'unpaid sales', 'cubes']
+    order_columns = ['merchant_id', 'user.first_name']
+
+    def get_initial_queryset(self):
+        return Profile.objects.all()
+
+    def render_column(self, row, column):
+        if column == 'merchant_id':
+            link = '<a href="/system/merchant/{0}">{1}</a>'.format(row.user.id, row.merchant_id)
+            return link
+        elif column == 'name':
+            link = '{0} {1}'.format(row.user.first_name, row.user.last_name)
+            return link
+        elif column == 'cubes':
+            cubes = Cube.objects.filter(user=row.user)
+
+            html = ''
+            for cube in cubes:
+                html = html + '<small class="label label-default"><a href="/system/cube/{0}">{1}</a></small>&nbsp;'.format(cube.id, cube.unit)
+            return html
+        elif column == 'unpaid sales':
+            sales = Sales.objects.filter(item__startswith=row.merchant_id)
+
+            unpaid = 0
+            for sale in sales:
+                if not sale.payout:
+                    unpaid = unpaid + sale.net
+            return unpaid
+        else:
+            return super(MerchantsListJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(merchant_id__icontains=search) |
+                           Q(user__first_name__icontains=search) |
+                           Q(user__last_name__icontains=search))
+        return qs
+
+class MerchantsCubeJson(BaseDatatableView):
+    model = Cube
+    columns = ['unit', 'next_due_date', 'rate', 'action']
+    order_columns = ['unit', 'next_due_date', 'rate']
+
+    def get_initial_queryset(self, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        return Cube.objects.filter(user=user_id)
+
+    def render_column(self, row, column):
+        if column == 'unit':
+            link = '<a href="/system/cube/{0}">{1}</a>'.format(row.id, row.unit)
+            return link
+        elif column == 'action':
+            html = '<a href="/system/cube/edit/{0}" class="pull-right"><i class="fa fa-pencil"></i></a>'.format(row.id)
+            return html
+        else:
+            return super(MerchantsCubeJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(unit__icontains=search) |
+                           Q(next_due_date__icontains=search))
+        return qs
+
+class MerchantsPayoutJson(BaseDatatableView):
+    model = Payout
+    columns = ['reference_number', 'date', 'amount', 'action']
+    order_columns = ['reference_number', 'date', 'amount', 'action']
+
+    def get_initial_queryset(self, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        return Payout.objects.filter(merchant=user_id)
+
+    def render_column(self, row, column):
+        if column == 'id':
+            link = '<a href="/system/payout/{0}">{1}</a>'.format(row.id, row.reference_number)
+            return link
+        elif column == 'action':
+            html = '<a href="/system/payout/edit/{0}" class="pull-right"><i class="fa fa-pencil"></i></a>'.format(row.id)
+            return html
+        else:
+            return super(MerchantsPayoutJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(reference_number__icontains=search) |
+                           Q(date__icontains=search))
+        return qs
+
+class MerchantsSalesJson(BaseDatatableView):
+    model = Sales
+    columns = ['item', 'date', 'quantity', 'gross', 'net', 'payout']
+    order_columns = ['item', 'date', 'quantity', 'gross', 'net', 'payout']
+
+    def get_initial_queryset(self, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        profile = Profile.objects.get(user=user_id)
+        return Sales.objects.filter(item__startswith=profile.merchant_id)
+
+    def render_column(self, row, column):
+        if column == 'item':
+            link = row.item
+            item = Item.objects.filter(code=row.item).first()
+            if item:
+                link = '<a href="/system/item/{0}">{1}</a>'.format(item.id, item.code)
+            return link
+        elif column == 'payout':
+            link = '<small class="label label-danger">Unpaid</small>'
+            if row.payout:
+                payout = Payout.objects.filter(id=row.payout).first()
+                if payout:
+                    link = '<small class="label label-default"><a href="/system/payout/{0}">{1}</a></small>'.format(payout.id, payout.id)
+                else:
+                    link = '<small class="label label-warning">{0}</small>'.format(row.payout)
+            return link
+        else:
+            return super(MerchantsSalesJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(item__icontains=search) |
+                           Q(date__icontains=search) |
+                           Q(payout__icontains=search))
+        return qs
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
@@ -47,9 +180,6 @@ def detail(request, user_id):
         if bank:
             context_dict['bank']  = bank
 
-        cubes = Cube.objects.filter(user=user).order_by('-next_due_date')
-        context_dict['cubes'] = cubes
-
         payouts = Payout.objects.filter(merchant=user).order_by('-date')
         context_dict['payouts'] = payouts
 
@@ -74,19 +204,6 @@ def all(request):
 
     try:
         template = 'system_app/merchant/all.html'
-        context_dict = dict()
-        context_dict['merchants'] = list()
-
-        users = User.objects.filter(groups__name='Merchant')
-        for user in users:
-            cubes = Cube.objects.filter(user=user)
-            profile = Profile.objects.get(user=user)
-
-            profile_dict = model_to_dict(profile)
-            profile_dict.update(model_to_dict(user))
-
-            context_dict['merchants'].append({'profile': profile_dict,
-                                              'cubes': cubes})
 
     except ObjectDoesNotExist:
         raise Http404
@@ -94,7 +211,7 @@ def all(request):
     except:
         return server_error(request)
 
-    return render(request, template, context_dict)
+    return render(request, template)
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)

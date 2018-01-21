@@ -74,46 +74,4 @@
         </div>
     </div>
 </div>
-<div class="row" id="cube-item">
-    <div class="col-md-12">
-        <div class="box">
-            {% if items %}
-            <div class="box-body">
-                <table id="item_table" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Stock</th>
-                            <th>Price</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                            <tr>
-                                <td>
-                                    <a href="#">
-                                        {{ item.code }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ item.quantity }}
-                                </td>
-                                <td>
-                                    {{ item.price }}
-                                </td>
-                                <td>
-                                    <a href="#" class="pull-right">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor%}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
 {% endblock %}

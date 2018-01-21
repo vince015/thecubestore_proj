@@ -187,7 +187,7 @@ def inventory(request, cube_id):
                     splits = item.split('_')
                     target_item = Item.objects.get(id=int(splits[2]),
                                                    code=splits[3])
-                    print('{0} => {1}'.format(item, request.POST.get(item)))
+                    # print('{0} => {1}'.format(item, request.POST.get(item)))
                     val = int(request.POST.get(item))
                     if splits[-1] == 'in':
                         target_item.quantity = target_item.quantity + val

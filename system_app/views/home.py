@@ -72,33 +72,6 @@ def dashboard(request):
         items = Item.objects.all()
         context_dict['items'] = items[:10]
 
-        sales = Sales.objects.all().order_by('-date')
-        context_dict['sales'] = sales
-
-        unpaid = 0
-        for sale in sales:
-            if not sale.payout:
-                unpaid = unpaid + sale.net
-        context_dict['unpaid'] = unpaid
-
-        payouts = Payout.objects.all().order_by('-date')
-        context_dict['payouts'] = payouts
-
-        context_dict['merchants'] = list()
-        cubes = Cube.objects.all().order_by('-next_due_date')
-        for cube in cubes:
-            merchant = cube.user.__dict__
-            profile = Profile.objects.filter(user=cube.user).first()
-            if profile:
-                merchant.update(profile.__dict__)
-            contact = Contact.objects.filter(user=cube.user).first()
-
-            merchant_info = {'profile': merchant,
-                             'contact': contact,
-                             'cube': cube}
-
-            context_dict['merchants'].append(merchant_info)
-
     except Exception as ex:
         return server_error(request)
 

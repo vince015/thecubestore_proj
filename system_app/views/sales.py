@@ -16,36 +16,6 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 from system_app.models import Sales, Item, Payout
 from util.util import SYSTEM_APP_LOGIN, is_crew
 
-class SalesListJson(BaseDatatableView):
-    model = Sales
-    columns = ['item', 'date', 'quantity', 'gross', 'payout']
-    order_columns = ['item', 'date', 'quantity', 'gross', 'payout.reference_number']
-
-    def get_initial_queryset(self):
-        return Sales.objects.all()
-
-    def render_column(self, row, column):
-        if column == 'item':
-            link = row.item
-            item = Item.objects.filter(code=row.item).first()
-            if item:
-                link = '<a href="/system/item/{0}">{1}</a>'.format(item.id, item.code)
-            return link
-        elif column == 'payout':
-            link = '<em>Unpaid</em>'
-            if row.payout:
-                payout = Payout.objects.get(id=row.payout)
-                link = '<a href="/system/payout/{0}">{1}</a>'.format(payout.id, payout.id)
-            return link
-        else:
-            return super(SalesListJson, self).render_column(row, column)
-
-    def filter_queryset(self, qs):
-        search = self.request.GET.get('search[value]', None)
-        if search:
-            qs = qs.filter(item__icontains=search)
-        return qs
-
 def compute_net(amount, vat, sales):
 
     vat_deduct = amount * (vat / 100)
@@ -63,6 +33,79 @@ def current_date():
 
     except:
         raise
+
+class SalesListJson(BaseDatatableView):
+    model = Sales
+    columns = ['item', 'date', 'quantity', 'gross', 'payout']
+    order_columns = ['item', 'date', 'quantity', 'gross', 'payout']
+
+    def get_initial_queryset(self):
+        return Sales.objects.all()
+
+    def render_column(self, row, column):
+        if column == 'item':
+            link = row.item
+            item = Item.objects.filter(code=row.item).first()
+            if item:
+                link = '<a href="/system/item/{0}">{1}</a>'.format(item.id, item.code)
+            return link
+        elif column == 'payout':
+            link = '<small class="label label-danger">Unpaid</small>'
+            if row.payout:
+                payout = Payout.objects.filter(id=row.payout).first()
+                if payout:
+                    link = '<small class="label label-default"><a href="/system/payout/{0}">{1}</a></small>'.format(payout.id, payout.id)
+                else:
+                    link = '<small class="label label-warning">{0}</small>'.format(row.payout)
+            return link
+        else:
+            return super(SalesListJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(item__icontains=search) |
+                           Q(date__icontains=search) |
+                           Q(payout__icontains=search))
+        return qs
+
+class SalesPayJson(BaseDatatableView):
+    model = Sales
+    columns = ['action', 'item', 'date', 'quantity', 'gross', 'net']
+    order_columns = ['item', 'item', 'date', 'quantity', 'gross', 'net']
+
+    def get_initial_queryset(self):
+        return Sales.objects.filter(payout=None)
+
+    def render_column(self, row, column):
+        if column == 'action':
+            html = '<input type="checkbox" name="sales" value="{0}">'.format(row.id)
+            return html
+        else:
+            return super(SalesPayJson, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(item__icontains=search) |
+                           Q(date__icontains=search) |
+                           Q(payout__icontains=search))
+        return qs
+
+@login_required(login_url=SYSTEM_APP_LOGIN)
+@user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
+def all(request):
+
+    try:
+        template = 'system_app/sales/all.html'
+
+    except ObjectDoesNotExist:
+        raise Http404
+
+    except:
+        return server_error(request)
+
+    return render(request, template)
 
 @login_required(login_url=SYSTEM_APP_LOGIN)
 @user_passes_test(is_crew, login_url=SYSTEM_APP_LOGIN)
@@ -122,6 +165,7 @@ def pay(request, payout_id):
             return redirect('/system/payout/{0}'.format(payout.id))
 
     except:
+        # raise
         return server_error(request)
 
     return render(request, template, context_dict)
