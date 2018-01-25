@@ -57,7 +57,7 @@ class CubesListJson(BaseDatatableView):
 
 class CubesItemJson(BaseDatatableView):
     model = Item
-    columns = ['code', 'description', 'quantity', 'in', 'out']
+    columns = ['code', 'description', 'quantity', 'price', 'in', 'out']
     order_columns = ['code', 'description', 'quantity']
 
     def get_initial_queryset(self, **kwargs):
@@ -65,7 +65,25 @@ class CubesItemJson(BaseDatatableView):
         return Item.objects.filter(cube=cube_id)
 
     def render_column(self, row, column):
-        if column == 'in':
+        item = Item.objects.filter(code=row.code).first()
+        if column == 'code':
+            html = ''
+            if item:
+                html = '<a href="/system/item/{0}">{1}</a>'.format(item.id, item.code)
+            return html
+        elif column == 'price':
+            if item:
+                html = '<input type="number"\
+                               name="__{0}_{1}_price"\
+                               id="priceInput"\
+                               min="1"\
+                               step=0.01\
+                               value="{2}"\
+                               class="form-control pull-left"\
+                               placeholder="Price"\
+                               style="width: 100px">'.format(row.id, row.code, item.price)
+            return html
+        elif column == 'in':
             html = '<input type="number"\
                            name="__{0}_{1}_in"\
                            id="inInput"\

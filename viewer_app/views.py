@@ -29,7 +29,7 @@ def user_login(request):
     try:
         # Redirection
         template = 'viewer_app/login.html'
-        redirect = request.GET.get('next', '/thecubestore')
+        redirect = request.GET.get('next', '/merchants/')
 
         context_dict = dict()
         context_dict['redirect_to'] = redirect
@@ -86,7 +86,7 @@ def change_password(request):
                 update_session_auth_hash(request, user)  # Important!
                 messages.success(request, 'Your password was successfully updated!')
 
-                return redirect('/thecubestore/profile')
+                return redirect('/merchants/profile')
         else:
             form = PasswordChangeForm(request.user)
             context_dict['form'] = form
