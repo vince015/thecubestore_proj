@@ -37,6 +37,9 @@
 ehthumbs.db
 Thumbs.db
 
+# env
+env
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
