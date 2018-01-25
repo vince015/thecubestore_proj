@@ -150,4 +150,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "www", "static")
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
-LOGIN_URL = '/thecubestore/login/'
+LOGIN_URL = '/merchants/login/'
