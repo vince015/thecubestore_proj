@@ -117,11 +117,11 @@ class Item(models.Model):
                                 null=True,
                                 validators=[MinValueValidator(decimal.Decimal('0.01'))])
     vat = models.DecimalField(default=0,
-                              max_digits=3,
+                              max_digits=5,
                               decimal_places=2,
                               null=True)
     commission = models.DecimalField(default=0,
-                                     max_digits=3,
+                                     max_digits=5,
                                      decimal_places=2,
                                      null=True)
     description = models.CharField(max_length=256,
